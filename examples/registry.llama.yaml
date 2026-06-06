@@ -1,0 +1,19 @@
+# Install the matching ai-local-llm.service before using Start.
+# Model weights and llama-server are installed separately; see docs/models.md.
+models:
+  - id: local-llm
+    name: Local GGUF model
+    short: Local LLM
+    category: LLM
+    backend: llama.cpp
+    quant: User selected
+    port: 18021
+    sysd: ai-local-llm
+    native: true
+    ctx: 8k
+    desc: A locally installed llama.cpp server.
+    in: [text]
+    out: [text]
+ports:
+  local-llm: 18021
+profiles: []

@@ -1,0 +1,12 @@
+[Unit]
+Description=Gemma4 26B-A4B Q4_K_M Uncensored llama :18031 (Flash Attention, MTP off)
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/sbin/ai-gemma4-26b-q4k-mtp.sh up
+ExecStop=/usr/local/sbin/ai-gemma4-26b-q4k-mtp.sh down
+TimeoutStartSec=600
+TimeoutStopSec=30

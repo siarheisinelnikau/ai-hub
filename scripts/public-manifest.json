@@ -1,0 +1,25 @@
+{
+  "include": [
+    ".editorconfig", ".env.example", ".gitattributes", ".gitignore", ".github/**/*",
+    "README.md", "CHANGELOG.md", "CONTRIBUTING.md", "SECURITY.md", "THIRD_PARTY_NOTICES.md",
+    "go.mod", "go.sum", "Makefile", "requirements-dev.txt", "start.sh", "start.ps1",
+    "ai-hub.service", "favicon.svg", "favicon_light.svg", "bg.svg",
+    "cmd/**/*.go", "internal/**/*.go", "examples/**/*", "docs/**/*",
+    "static/index.html", "static/chat.html", "static/css/*.css", "static/js/*.js", "static/img/**/*.svg",
+    "tests/**/*.py", "tests/*.cjs", "_wip/app.py", "registry.yaml", "benchmarks/context.json",
+    "scripts/start.py", "scripts/env.py", "scripts/env.cjs", "scripts/deploy.py",
+    "scripts/check.py", "scripts/ci.sh", "scripts/demo.py", "scripts/export_public.py", "scripts/public-manifest.json",
+    "gen-opencode.js", "ai-*.sh", "units/*.service",
+    "strata/launch.py", "strata/test_launch.py", "strata/install_uncensored_iq4.py",
+    "strata/prepare_server.py", "strata/connect_webui.py", "strata/sync-pi.js", "strata/ai-*.sh", "strata/ai-*.service",
+    "maya/install.py", "maya/install_derisked.py", "maya/launch.py", "maya/launch_derisked.py",
+    "maya/test_launch.py", "maya/ai-*.sh", "maya/ai-*.service",
+    "tools/install_nemotron35.py", "tools/install_nemotron35_nvfp4.py", "tools/install_nemotron35_uncensored.py",
+    "tools/install_qwen122_mtp.py", "tools/download_glm53_maya_m.py", "tools/download_glm53_derisked.py",
+    "comfyui/Dockerfile", "comfyui/docker-compose.yml", "comfyui/entrypoint.sh", "comfyui/healthcheck.py",
+    "comfyui/download-models.sh", "comfyui/patch_video_audio.py", "comfyui/custom_nodes/**/*.py",
+    "music/Dockerfile", "music/docker-compose.yaml", "music/.env.example", "music/*.sh", "music/*.service",
+    "threed/Dockerfile", "threed/docker-compose.yml", "threed/*.sh", "threed/*.service"
+  ],
+  "rename": {"docs/AGENTS.public.md": "AGENTS.md"}
+}

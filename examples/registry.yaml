@@ -1,0 +1,5 @@
+# Safe first start: add only services that you have installed on this machine.
+# See docs/models.md and examples/registry.llama.yaml.
+models: []
+ports: {}
+profiles: []

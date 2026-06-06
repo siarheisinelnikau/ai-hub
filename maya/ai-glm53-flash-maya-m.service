@@ -1,0 +1,17 @@
+[Unit]
+Description=GLM 5.3 Flash Maya-M - Project Maya :18037
+After=network.target
+
+[Service]
+Type=simple
+User=user
+WorkingDirectory=/srv/ai/maya
+ExecStart=/usr/local/sbin/ai-glm53-flash-maya-m.sh
+Environment=PYTHONUNBUFFERED=1
+Environment=MAYA_UPDATE_CHECK=0
+KillMode=control-group
+TimeoutStopSec=60
+LimitMEMLOCK=infinity
+
+[Install]
+WantedBy=multi-user.target

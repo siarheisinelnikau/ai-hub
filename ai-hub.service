@@ -1,0 +1,18 @@
+[Unit]
+Description=ai-hub model switching panel
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+WorkingDirectory=/srv/ai-hub
+ExecStart=/srv/ai-hub/aihub
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=15
+User=root
+UMask=0077
+# The binary loads /srv/ai-hub/.env itself (including first-start token setup).
+Environment=AIHUB_ENV_FILE=/srv/ai-hub/.env
+
+[Install]
+WantedBy=multi-user.target
