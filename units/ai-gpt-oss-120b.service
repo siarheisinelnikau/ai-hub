@@ -1,0 +1,12 @@
+[Unit]
+Description=GPT-OSS 120B Uncensored MXFP4 llama :18041 (3-4 GPU, ctx 64k-128k, parallel 1-4)
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/sbin/ai-gpt-oss-120b.sh up
+ExecStop=/usr/local/sbin/ai-gpt-oss-120b.sh down
+TimeoutStartSec=600
+TimeoutStopSec=60

@@ -1,0 +1,83 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# Go
+/bin/
+*.test
+*.out
+coverage.*
+
+# Logs / state
+*.log
+wait-vllm.log
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Local secrets — never commit real tokens
+.env
+.env.*
+!.env.example
+!.env.*.example
+token
+server_token.txt
+!token.example
+/keys/
+/oauth/
+/cloud.json
+/webhooks.txt
+/state/
+/downloads/
+*.pem
+*.key
+
+# Binaries (built locally, deployed to server)
+/aihub
+/aihub-linux
+/aihub.exe
+/mcp
+/mcp.exe
+/mcp-linux
+/parity-aihub.exe
+
+# Archive of one-shot scripts and old duplicates
+archive/
+
+# Local browser profiles and temporary deployment/report archives
+**/.qa-chrome/
+*.zip
+benchmarks/**/cleanup/tmp/
+benchmarks/**/metadata-before/
+benchmarks/**/final-before/
+benchmarks/**/server-evidence/
+
+# Large raw disk inventories and duplicate browser QA output stay local
+reports/disk-*/filesystem.csv.gz
+reports/disk-*/directories.csv.gz
+reports/disk-*/summary.json
+reports/disk-*/report-check-dom.html
+reports/disk-*/report-script-check.js
+
+# Local tools / editors / runtime caches
+node_modules/
+.idea/
+.vscode/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.tmp
+*.bak
+*.bak.*
+
+# Private publication staging and audit results (never publish the old history).
+/release/
+/work/public-prep/
+# Administrator-owned portable configuration.
+/registry.local.yaml
+/catalog.local.yaml

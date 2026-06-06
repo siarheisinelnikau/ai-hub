@@ -1,0 +1,23 @@
+[Unit]
+Description=ACE-Step 1.5 Music Generation Service
+Documentation=https://github.com/ace-step/ACE-Step-1.5
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=simple
+User=user
+WorkingDirectory=/srv/ai/stack
+# Stop any existing music container, then start fresh
+ExecStartPre=-/usr/bin/docker compose -f docker-compose.yml stop music
+ExecStart=/usr/bin/docker compose -f docker-compose.yml up music
+ExecStop=/usr/bin/docker compose -f docker-compose.yml stop music
+Restart=on-failure
+RestartSec=10
+
+# Environment
+EnvironmentFile=-/srv/ai/stack/.env
+
+# Resource limits
+LimitNOFILE=65536
+TimeoutStartSec=300

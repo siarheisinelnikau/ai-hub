@@ -1,0 +1,83 @@
+###############################################################################
+# docker-compose.yml — ai-hub 3D service (Hunyuan3D-2.1)
+#
+# Usage:
+#   docker compose up -d threed       # start
+#   docker compose logs -f threed     # follow logs
+#   docker compose down threed        # stop
+#
+# Model cache persists in /srv/ai/models/huggingface across restarts.
+###############################################################################
+
+services:
+  threed:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ai-hub-threed:latest
+    container_name: ai-hub-threed
+    restart: unless-stopped
+
+    # ── GPU ──────────────────────────────────────────────────────────────────
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1           # single GPU (24GB VRAM is enough for shape+tex)
+              capabilities: [gpu]
+
+    # ── Ports ────────────────────────────────────────────────────────────────
+    ports:
+      - "8020:8020"
+
+    # ── Volumes ──────────────────────────────────────────────────────────────
+    volumes:
+      # Model cache — persists across container rebuilds
+      - /srv/ai/models:/models
+      # Output directory — generated 3D models accessible on host
+      - /srv/ai/threed/outputs:/workspace/Hunyuan3D-2.1/save_dir
+
+    # ── Environment ──────────────────────────────────────────────────────────
+    environment:
+      # HuggingFace cache inside container
+      - HF_HOME=/models/huggingface
+      - HF_HUB_CACHE=/models/huggingface/hub
+
+      # Model configuration
+      - MODEL_PATH=tencent/Hunyuan3D-2.1
+      - SUBFOLDER=hunyuan3d-dit-v2-1
+      - TEXGEN_MODEL_PATH=tencent/Hunyuan3D-2.1
+
+      # VRAM optimization (critical for RTX 3090 24GB)
+      # Shape gen: ~10GB | Texture gen: ~21GB | Total: ~29GB
+      # low_vram_mode offloads texture pipeline to CPU between steps
+      - LOW_VRAM=true
+
+      # Texture generation (disable to save VRAM, shape-only mode)
+      - DISABLE_TEX=false
+
+      # Port
+      - PORT=8020
+
+      # Optional features
+      - ENABLE_T23D=false       # text-to-3D (requires HunyuanDiT model ~5GB extra)
+      - ENABLE_FLASHVDM=false   # FlashVDM acceleration
+
+    # ── Resource limits ──────────────────────────────────────────────────────
+    shm_size: "4g"
+
+    # ── Health check ─────────────────────────────────────────────────────────
+    healthcheck:
+      test: ["CMD", "/workspace/healthcheck.sh"]
+      interval: 30s
+      timeout: 10s
+      start_period: 120s      # model loading takes 60-120s
+      retries: 3
+
+    # ── Logging ──────────────────────────────────────────────────────────────
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "3"

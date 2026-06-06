@@ -1,0 +1,12 @@
+[Unit]
+Description=Qwen 3.5 122B Q4_K_M llama :18028 (1-4 GPU, ctx 64k-256k)
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/sbin/ai-qwen35-122b-q4k-llama.sh up
+ExecStop=/usr/local/sbin/ai-qwen35-122b-q4k-llama.sh down
+TimeoutStartSec=900
+TimeoutStopSec=30

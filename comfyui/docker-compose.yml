@@ -1,0 +1,105 @@
+###############################################################################
+# ComfyUI Docker Compose — Production Stack
+#
+# Usage:
+#   docker compose up -d          # start
+#   docker compose logs -f comfyui  # follow logs
+#   docker compose down           # stop
+#
+# First run:
+#   docker compose build          # build the image
+#   docker compose up -d
+#
+# GPU: pass ALL 4× RTX 3090 (96 GB total VRAM)
+# Port: 8188 (ComfyUI web UI)
+###############################################################################
+
+services:
+  comfyui:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        COMFYUI_REF: v0.37.0   # pin to a known-good release (Qwen-Image 2.1 support)
+    image: comfyui:latest
+    container_name: comfyui
+    restart: unless-stopped
+
+    ports:
+      - "8188:8188"
+
+    # ── GPU access ──────────────────────────────────────────────────────────
+    # All 4 RTX 3090 GPUs are passed through.
+    # ComfyUI handles multi-GPU internally (model splitting, not tensor parallel).
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+    environment:
+      # NVIDIA runtime config
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      # Reduce CUDA memory fragmentation
+      - PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+      # Timezone
+      - TZ=Europe/Moscow
+      # ComfyUI flags: --listen, --preview-method auto
+      # Note: --use-sage-attention is in CMD, not here
+      - CLI_ARGS=--listen --preview-method auto
+
+    volumes:
+      # ── Persistent storage ──────────────────────────────────────────────
+      # Models: checkpoints, LoRAs, VAEs, text encoders, diffusion models
+      # This is the LARGEST volume — expect 200+ GB with FLUX + SDXL + video models
+      - /srv/ai/models/comfyui:/home/comfy/ComfyUI/models
+
+      # Generated images/videos
+      - /srv/ai/comfyui/output:/home/comfy/ComfyUI/output
+
+      # Input images for img2img, ControlNet, etc.
+      - /srv/ai/comfyui/input:/home/comfy/ComfyUI/input
+
+      # Custom nodes (persisted across rebuilds)
+      - /srv/ai/comfyui/custom_nodes:/home/comfy/ComfyUI/custom_nodes
+
+      # ComfyUI user data (workflows, settings, auth)
+      - /srv/ai/comfyui/user:/home/comfy/ComfyUI/user
+
+      # Python/pip cache (speeds up rebuilds)
+      - /srv/ai/comfyui/cache:/home/comfy/.cache
+
+    # ── Resource limits ────────────────────────────────────────────────────
+    # Adjust based on your server. With 125 GB RAM and 4× 3090:
+    deploy:
+      resources:
+        limits:
+          memory: 48G           # leave headroom for other services
+        reservations:
+          memory: 16G
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+    # ── Networking ──────────────────────────────────────────────────────────
+    # ComfyUI binds to 0.0.0.0:8188 inside the container
+    # External access: http://<server-ip>:8188
+
+    # ── Logging ─────────────────────────────────────────────────────────────
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "3"
+
+    # ── Health check ────────────────────────────────────────────────────────
+    healthcheck:
+      test: ["CMD", "python", "/home/comfy/ComfyUI/healthcheck.py"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 90s   # ComfyUI + custom nodes can take a while to load

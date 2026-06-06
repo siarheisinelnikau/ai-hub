@@ -1,0 +1,12 @@
+[Unit]
+Description=Nemotron 3.5 Super VL NVFP4 SGLang :18035 (4 GPUs)
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/sbin/ai-nemotron35-super-nvfp4.sh up
+ExecStop=/usr/local/sbin/ai-nemotron35-super-nvfp4.sh down
+TimeoutStartSec=1800
+TimeoutStopSec=60
