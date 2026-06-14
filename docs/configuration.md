@@ -35,12 +35,19 @@ Restart after changes.
 | `AIHUB_SSH_USER`, `AIHUB_SSH_PORT` | Deployment account and SSH port |
 | `AIHUB_REMOTE_DIR`, `AIHUB_SERVICE`, `AIHUB_MCP_SERVICE` | Deployment root and units |
 | `AIHUB_OPENCODE_OUTPUT` | Output path for the legacy OpenCode generator |
+| `AIHUB_CLIENT_TOKEN`, `AIHUB_CLIENT_TOKEN_FILE` | Private hub credential for client generators; token overrides the file |
 
 Explicit registry/catalog paths must exist and validate; relative paths resolve
 against the installation root. Unset paths retain the historical registry and
 built-in catalog, including their installation-specific paths and installers.
 Only public links are exposed by `/runtime-config.js`; never put credentials
 in those URLs. Internal provider URLs are trusted administrator configuration.
+
+OpenCode/pi generators read the Universal API credential from
+`AIHUB_CLIENT_TOKEN`, then `AIHUB_CLIENT_TOKEN_FILE` (default:
+`~/.config/ai-hub/hub-api-key`), then `AIHUB_TOKEN`. Keep a remote server's
+credential separate from a local development token. Generated client files
+contain credentials and must remain private.
 
 ## MCP file access
 

@@ -6,7 +6,7 @@
     },
     {
       "path": ".env.example",
-      "sha256": "b3095a311da57fc857d02e084232c73e5939a079c83697a42717c1861dfceab4"
+      "sha256": "1c32e053a19686637245a974913616998d21fbb4809dd8d41a80bcd05889c87d"
     },
     {
       "path": ".gitattributes",
@@ -34,11 +34,15 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "58ba73006ea5a768444de2d333c35171fae17043f7ae6a379fa26349bb0c9f55"
+      "sha256": "65d0aca2d100269b63bf2815bf840bd8e921e886a32e35848e42c6dff81e660c"
     },
     {
       "path": "CONTRIBUTING.md",
       "sha256": "91c3330e582408154aefb57dac9af4638c98d79824172acbdfb04e9df676ecd5"
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "f428937b638549803ed6236f579593c3c98cca9a36fc97bf96472a315e9712cf"
     },
     {
       "path": "Makefile",
@@ -46,7 +50,7 @@
     },
     {
       "path": "README.md",
-      "sha256": "cb3b4d46c04437e5ebec6f148f4015db9d13d0a7d8a528ade313e17a89d771e2"
+      "sha256": "aab76611fbc5d035a1e733bb2c329f1996a0f30b27a4ba68e2771d9865787d9f"
     },
     {
       "path": "SECURITY.md",
@@ -54,7 +58,7 @@
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
-      "sha256": "33fdeb4ae654e0e70d7ea646ae62e0b5e285f98d70ac61f124383dbe84cc9690"
+      "sha256": "daeb4fd45f262112f9615a89802f78b3033fc1de0a9314d0f20e75c774203236"
     },
     {
       "path": "_wip/app.py",
@@ -170,7 +174,7 @@
     },
     {
       "path": "docs/configuration.md",
-      "sha256": "e01291cba03156fc01db1a6d218fa19f785910787c7d68a8a78bbc7b2aa97264"
+      "sha256": "e023306819ba1c495772f61c85a5b6c7ec2bcf79517ae1033e88cb86762249ba"
     },
     {
       "path": "docs/images/dashboard.jpg",
@@ -190,7 +194,7 @@
     },
     {
       "path": "docs/releasing.md",
-      "sha256": "7f463e06f1b7ac551f876492439e0b07db17f8c1cbcefa1aa642667e57e71b26"
+      "sha256": "ef98dd3856b8f7b381b70cbb55a01443f88eec2e0234cf1598ff70384df53e41"
     },
     {
       "path": "examples/ai-local-llm.service",
@@ -218,7 +222,7 @@
     },
     {
       "path": "gen-opencode.js",
-      "sha256": "555cb5061935688078522688d346053a841f21bce96273dd89b3c33db0094595"
+      "sha256": "8ad7a139d31545d75c2fe88069b5c50a5c49bae40cc29443152ddb1b657d614a"
     },
     {
       "path": "go.mod",
@@ -670,7 +674,7 @@
     },
     {
       "path": "scripts/env.cjs",
-      "sha256": "f548a4b57afb6949264f5ad9430eb6e223738b7615ee1bdc8fd67a624d5fac07"
+      "sha256": "55e81a6d91446087c86de7c85f203c2582b9b79ed19921caf084150cca59e726"
     },
     {
       "path": "scripts/env.py",
@@ -678,7 +682,7 @@
     },
     {
       "path": "scripts/export_public.py",
-      "sha256": "6cd6e74138d5f3160f6c795bfa986995b2f90860a22e5cc3cd30aa4e13119079"
+      "sha256": "e5535972302149d98c265781c851e3e72c6f40618d2edea92e36781a1b6defd8"
     },
     {
       "path": "scripts/public-manifest.json",
@@ -846,7 +850,7 @@
     },
     {
       "path": "strata/connect_webui.py",
-      "sha256": "9ffa3e6d20cb660dc6ab41ed8bd6fd721ce4a1e26665b8b4510497fa519a06d2"
+      "sha256": "a0aa9ceae67acc889c05cd9b722de661032ad21553857eaedeaaf3f72603935c"
     },
     {
       "path": "strata/install_uncensored_iq4.py",
@@ -862,7 +866,7 @@
     },
     {
       "path": "strata/sync-pi.js",
-      "sha256": "05e5d3d5f9a82d5d3f6b87540b37771560bf8d76028d2538d5e0916e48be0966"
+      "sha256": "f2bd655c8378b4bfc996bcbaf9e8fdd144556e12dc8c6b0e599995a4e43c7f56"
     },
     {
       "path": "strata/test_launch.py",
@@ -870,7 +874,7 @@
     },
     {
       "path": "tests/frontend.test.cjs",
-      "sha256": "4fc7fa60b4f28513f70fca12a639d20022f5deea135cd45a2e50f5a8089f22b5"
+      "sha256": "9f64d72113c35613c8100475c97b6e81fbdea8045d2fffcce0a66265f673c95c"
     },
     {
       "path": "tests/parity/run_parity.py",

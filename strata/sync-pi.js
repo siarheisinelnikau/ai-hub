@@ -1,4 +1,4 @@
-const {serviceURL, hubURL} = require('../scripts/env.cjs');
+const {serviceURL, hubURL, hubToken} = require('../scripts/env.cjs');
 // Merge Strata into pi with only the largest context; trim the Universal alias.
 const fs = require('fs');
 const os = require('os');
@@ -68,6 +68,8 @@ for (const [name, port, id, label, context] of [
 }
 const universal = doc.providers['ai-hub'];
 if (universal?.models) {
+  universal.baseUrl = hubURL();
+  universal.apiKey = hubToken();
   universal.models = universal.models.filter(model => model.id !== 'universal-128k');
   const model = universal.models.find(model => model.id === 'universal');
   if (model) {
