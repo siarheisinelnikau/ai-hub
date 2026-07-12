@@ -13,8 +13,8 @@ no frontend build step or database is required.
 
 ![ai-hub dashboard](docs/images/dashboard.jpg)
 
-*Real UI with synthetic documentation data, not measured model performance.
-Explore it locally with `python scripts/demo.py`.*
+*Dashboard preview with sample data. See [real-server validation and
+benchmarks](docs/benchmarks.md) for measured results from the deployed system.*
 
 ## Features
 
@@ -34,6 +34,19 @@ Explore it locally with `python scripts/demo.py`.*
   notifications, dark/light themes, and a responsive mobile layout.
 - **Private defaults:** loopback listener, generated access token, authenticated
   inference/metrics/MCP, CSRF protection, and expiring browser sessions.
+
+## Tested on real hardware
+
+ai-hub is operated and tested on a Linux server with **4 x NVIDIA RTX 3090
+(96 GB total VRAM)**. The repository includes [measured inference
+benchmarks](benchmarks/context.json) from that server: actual input token
+counts, decode and prefill throughput, repeated trials, and context curves.
+
+Live deployment checks cover authenticated streaming inference, Open WebUI,
+OpenCode and pi client connections, GPU telemetry, and MCP initialization and
+tool discovery. Linux and Windows CI separately exercise the automated test
+suite. See [benchmark results and methodology](docs/benchmarks.md) for the
+hardware measurements, test conditions, and incomplete curves.
 
 ## Model families and backends
 
@@ -159,6 +172,10 @@ the empty first-run examples are the recommended starting point. Validate
 hardware integration and model performance on your own machine.
 
 ## Development
+
+For a local UI preview with sample data and model actions disabled, run
+`python scripts/demo.py`. This optional preview is separate from the live
+server and its recorded benchmarks.
 
 ```sh
 python -m pip install -r requirements-dev.txt
