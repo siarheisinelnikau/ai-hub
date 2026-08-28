@@ -48,11 +48,16 @@ import (
 	"time"
 
 	"aihub/internal/auth"
+	"aihub/internal/buildinfo"
 	"aihub/internal/config"
 	"aihub/internal/mcp"
 )
 
 func main() {
+	if len(os.Args) == 2 && (os.Args[1] == "--version" || os.Args[1] == "-version") {
+		fmt.Println(buildinfo.String("ai-hub-mcp"))
+		return
+	}
 	if err := config.LoadEnvironment(); err != nil {
 		log.Fatalf("config: %v", err)
 	}

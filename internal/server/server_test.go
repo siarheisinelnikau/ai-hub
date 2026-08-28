@@ -18,6 +18,7 @@ import (
 
 	"aihub/internal/actions"
 	"aihub/internal/auth"
+	"aihub/internal/buildinfo"
 	"aihub/internal/metrics"
 	"aihub/internal/registry"
 	"aihub/internal/status"
@@ -103,6 +104,12 @@ func TestHealthz(t *testing.T) {
 	mustDecode(t, resp.Body, &body)
 	if body["ok"] != true {
 		t.Fatalf("body = %v, want {\"ok\":true}", body)
+	}
+	if body["version"] != buildinfo.Version || body["revision"] == "" || body["modified"] == nil {
+		t.Fatalf("missing build metadata: %v", body)
+	}
+	if resp.Header.Get("Cache-Control") != "no-store" {
+		t.Fatal("health metadata must not be cached across upgrades")
 	}
 }
 

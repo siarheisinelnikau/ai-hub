@@ -10,6 +10,8 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"aihub/internal/buildinfo"
 )
 
 // ── fakes ────────────────────────────────────────────────────────
@@ -196,8 +198,8 @@ func TestInitializeAndToolsList(t *testing.T) {
 	if res["protocolVersion"] == "" {
 		t.Fatalf("missing protocolVersion: %v", res)
 	}
-	if res["serverInfo"] == nil {
-		t.Fatal("missing serverInfo")
+	if info, ok := res["serverInfo"].(map[string]interface{}); !ok || info["version"] != buildinfo.Version {
+		t.Fatalf("incorrect server version: %v", res["serverInfo"])
 	}
 
 	// tools/list

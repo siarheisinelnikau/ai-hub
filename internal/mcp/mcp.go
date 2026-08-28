@@ -16,6 +16,8 @@ import (
 	"net/http"
 	"os"
 	"sync"
+
+	"aihub/internal/buildinfo"
 )
 
 var protocolVersion = "2025-06-18"
@@ -23,10 +25,10 @@ var protocolVersion = "2025-06-18"
 // ── MCP JSON-RPC types ───────────────────────────────────────────
 
 type JSONRPCRequest struct {
-	JSONRPC string          `json:"jsonrpc"`
+	JSONRPC string           `json:"jsonrpc"`
 	ID      *json.RawMessage `json:"id,omitempty"`
-	Method  string          `json:"method"`
-	Params  json.RawMessage `json:"params,omitempty"`
+	Method  string           `json:"method"`
+	Params  json.RawMessage  `json:"params,omitempty"`
 }
 
 // HasID reports whether the request carries an "id" field (requests do,
@@ -34,16 +36,16 @@ type JSONRPCRequest struct {
 func (r *JSONRPCRequest) HasID() bool { return r.ID != nil }
 
 type JSONRPCResponse struct {
-	JSONRPC string      `json:"jsonrpc"`
+	JSONRPC string           `json:"jsonrpc"`
 	ID      *json.RawMessage `json:"id,omitempty"`
-	Result  interface{} `json:"result,omitempty"`
-	Error   *RPCError   `json:"error,omitempty"`
+	Result  interface{}      `json:"result,omitempty"`
+	Error   *RPCError        `json:"error,omitempty"`
 }
 
 type RPCError struct {
-	Code      int    `json:"code"`
-	Message   string `json:"message"`
-	Data      string `json:"data,omitempty"`
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+	Data    string `json:"data,omitempty"`
 }
 
 // ── MCP types ────────────────────────────────────────────────────
@@ -81,10 +83,16 @@ type ContentBlock struct {
 	MimeType string `json:"mimeType,omitempty"` // e.g. image/png, audio/wav
 }
 
-func textBlock(s string) ContentBlock      { return ContentBlock{Type: "text", Text: s} }
-func imageBlock(b64, mime string) ContentBlock { return ContentBlock{Type: "image", Data: b64, MimeType: mime} }
-func audioBlock(b64, mime string) ContentBlock { return ContentBlock{Type: "audio", Data: b64, MimeType: mime} }
-func videoBlock(b64, mime string) ContentBlock { return ContentBlock{Type: "video", Data: b64, MimeType: mime} }
+func textBlock(s string) ContentBlock { return ContentBlock{Type: "text", Text: s} }
+func imageBlock(b64, mime string) ContentBlock {
+	return ContentBlock{Type: "image", Data: b64, MimeType: mime}
+}
+func audioBlock(b64, mime string) ContentBlock {
+	return ContentBlock{Type: "audio", Data: b64, MimeType: mime}
+}
+func videoBlock(b64, mime string) ContentBlock {
+	return ContentBlock{Type: "video", Data: b64, MimeType: mime}
+}
 
 // ── Tool registry & handler ──────────────────────────────────────
 
@@ -103,7 +111,7 @@ type Server struct {
 // New creates a new MCP server with standard ai-hub info.
 func New() *Server {
 	return &Server{
-		info: ServerInfo{Name: "ai-hub-mcp", Version: "1.0.0"},
+		info: ServerInfo{Name: "ai-hub-mcp", Version: buildinfo.Version},
 		capabilities: Capabilities{
 			Tools: &ToolsCapability{ListChanged: false},
 		},
@@ -209,7 +217,12 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /mcp", s.handleSSE)
 	mux.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprint(w, `{"ok":true,"service":"ai-hub-mcp"}`)
+		w.Header().Set("Cache-Control", "no-store")
+		_ = json.NewEncoder(w).Encode(struct {
+			OK      bool   `json:"ok"`
+			Service string `json:"service"`
+			buildinfo.Info
+		}{OK: true, Service: "ai-hub-mcp", Info: buildinfo.Current()})
 	})
 	return mux
 }
