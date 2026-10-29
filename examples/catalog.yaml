@@ -1,0 +1,3 @@
+# An empty catalog prevents installation-specific downloads on a fresh checkout.
+# See docs/models.md for a custom catalog example.
+models: []

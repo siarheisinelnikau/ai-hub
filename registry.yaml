@@ -1,0 +1,617 @@
+models:
+- id: qwen-q4k-llama
+  requires_weights: true
+  name: Qwen 3.8 27B
+  short: Qwen Q4K
+  category: LLM
+  backend: llama.cpp
+  quant: Q4_K_M
+  port: 18021
+  group: qwen
+  vram: ~10 GB ×4
+  tps: 41.9 tok/s @20k
+  ctx: 256k
+  sysd: ai-qwen-q4k-llama
+  desc: orcarouter Q4_K_M 16.8G + native MTP x4 · 256k · vision
+  uncensored: true
+  hf: https://huggingface.co/orcarouter/Qwen3.8-27B-Uncensored-GGUF
+  in:
+  - text
+  - image
+  out:
+  - text
+  accel: MTP x4
+  parallel:
+    enabled: true
+    gpu_per_instance: 1
+    max_gpus: 4
+    ctx_options:
+    - 65536
+    - 131072
+    - 262144
+    default_ctx: 262144
+    gpu_options:
+    - 1
+    - 2
+    - 3
+    - 4
+    default_gpus: 4
+    weights_gb: 16.8
+    kv_gb_per_100k: 14
+    max_parallel: 8
+- id: glm53-flash-maya-m
+  requires_weights: true
+  name: GLM 5.3 Flash 321B
+  short: GLM 5.3 Flash
+  category: LLM
+  backend: Maya
+  quant: Maya-M IQ2_S
+  port: 18037
+  group: glm
+  vram: adaptive cache · GPU + RAM
+  tps: 59.4 tok/s @20k
+  ctx: 256k
+  sysd: ai-glm53-flash-maya-m
+  desc: Full 321B MoE · Maya-M 116 GB · GPU/RAM experts · MTP · vision
+  in: [text, image]
+  out: [text]
+  accel: MTP
+  hf: https://huggingface.co/peasantsmith/GLM-5.3-Flash-Maya-GGUF
+  parallel:
+    enabled: true
+    gpu_per_instance: 1
+    max_gpus: 4
+    ctx_options: [32768, 65536, 131072, 262144]
+    default_ctx: 262144
+    gpu_options: [1, 2, 3, 4]
+    default_gpus: 4
+    # Fixed projections + resident KV; routed experts also use system RAM.
+    weights_gb: 10
+    kv_gb_per_100k: 2
+    max_parallel: 1
+- id: glm53-flash-maya-m-derisked
+  requires_weights: true
+  name: GLM 5.3 Flash 321B Derisked
+  short: GLM Derisked
+  category: LLM
+  backend: Maya
+  quant: Maya-M IQ2_S
+  port: 18038
+  group: glm
+  vram: adaptive cache · GPU + RAM
+  tps: 56.4 tok/s @20k
+  ctx: 1M
+  sysd: ai-glm53-flash-maya-m-derisked
+  desc: Blackfrost_AI directional weight edit · 321B MoE · MTP · vision
+  uncensored: true
+  in: [text, image]
+  out: [text]
+  accel: MTP
+  hf: https://huggingface.co/peasantsmith/GLM-5.3-Flash-Maya-M-Derisked-IQ2_S-GGUF
+  parallel:
+    enabled: true
+    gpu_per_instance: 1
+    max_gpus: 4
+    ctx_options: [32768, 65536, 131072, 262144, 524288, 1048576]
+    default_ctx: 1048576
+    gpu_options: [1, 2, 3, 4]
+    default_gpus: 4
+    weights_gb: 10
+    kv_gb_per_100k: 2
+    max_parallel: 1
+- id: nemotron35-super-uncensored
+  requires_weights: true
+  name: Nemotron 3.5 Super VL 120B Uncensored
+  short: Nemotron Uncensored
+  category: LLM
+  backend: llama.cpp
+  quant: AD-Q4_K_S
+  port: 18036
+  group: nemotron
+  vram: ~23.2 GiB ×4
+  tps: 60.2 tok/s @20k
+  ctx: 1024k
+  sysd: ai-nemotron35-super-uncensored
+  desc: AtomicChat mixed Q5/Q8 · MTP3 · 1M Q8 KV · vision on CPU
+  uncensored: true
+  hf: https://huggingface.co/AtomicChat/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-Uncensored-GGUF
+  in: [text, image]
+  out: [text]
+  accel: MTP3
+  parallel:
+    enabled: true
+    gpu_per_instance: 4
+    max_gpus: 4
+    ctx_options: [65536, 131072, 262144, 524288, 786432, 1048576]
+    default_ctx: 1048576
+    gpu_options: [4]
+    default_gpus: 4
+    # Effective fixed GPU budget incl. MTP/scratch; measured custom tensor split.
+    weights_gb: 85.7
+    kv_gb_per_100k: 0.55
+    max_parallel: 1
+- id: nemotron35-super-nvfp4
+  requires_weights: true
+  name: Nemotron 3.5 Super VL 120B
+  short: Nemotron NVFP4
+  category: LLM
+  backend: SGLang
+  quant: NVFP4
+  port: 18035
+  group: nemotron
+  vram: ~23.4 GiB ×4
+  tps: 71.7 tok/s @20k
+  ctx: 384k
+  sysd: ai-nemotron35-super-nvfp4
+  desc: NVIDIA NVFP4 · SGLang Marlin TP4/EP4 · native MTP3 · up to 384k · vision
+  uncensored: false
+  hf: https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-NVFP4
+  in: [text, image]
+  out: [text]
+  accel: MTP3
+  parallel:
+    enabled: true
+    gpu_per_instance: 4
+    max_gpus: 4
+    ctx_options: [32768, 65536, 131072, 196608, 262144, 327680, 393114]
+    default_ctx: 393114
+    gpu_options: [4]
+    default_gpus: 4
+    weights_gb: 85.3
+    kv_gb_per_100k: 1.7
+    max_parallel: 1
+- id: nemotron35-super-q4k
+  requires_weights: true
+  name: Nemotron 3.5 Super VL 120B
+  short: Nemotron 3.5 Super
+  category: LLM
+  backend: llama.cpp
+  quant: Q4_K_M
+  port: 18034
+  group: nemotron
+  vram: ~21 GiB ×4
+  tps: 70.3 tok/s @20k
+  ctx: 1024k
+  sysd: ai-nemotron35-super-q4k
+  desc: NVIDIA 120B-A12B hybrid MoE · Q4_K_M · native MTP3 · up to 1024k · vision
+  uncensored: false
+  hf: https://huggingface.co/lmstudio-community/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-GGUF
+  in: [text, image]
+  out: [text]
+  accel: MTP3
+  parallel:
+    enabled: true
+    gpu_per_instance: 4
+    max_gpus: 4
+    ctx_options: [65536, 131072, 262144, 393216, 524288, 786432, 1048576]
+    default_ctx: 1048576
+    gpu_options: [4]
+    default_gpus: 4
+    weights_gb: 72
+    kv_gb_per_100k: 1.1
+    max_parallel: 1
+- id: qwen-q6k-llama
+  requires_weights: true
+  name: Qwen 3.8 27B
+  short: Qwen Q6K
+  category: LLM
+  backend: llama.cpp
+  quant: Q6_K
+  port: 18026
+  group: qwen
+  vram: ~15 GB ×4
+  tps: 39.0 tok/s @20k
+  ctx: 256k
+  sysd: ai-qwen-q6k-llama
+  desc: Q6_K 22G abliterated + native MTP + vision · 256k · GPU select
+  in:
+  - text
+  - image
+  out:
+  - text
+  accel: MTP x4
+  hf: https://huggingface.co/0bserverx/Qwen3.8-27B-Heretic-Abliterated-Uncensored-GGUF
+  uncensored: true
+  parallel:
+    enabled: true
+    gpu_per_instance: 1
+    max_gpus: 4
+    ctx_options:
+    - 65536
+    - 131072
+    - 262144
+    default_ctx: 262144
+    gpu_options:
+    - 1
+    - 2
+    - 3
+    - 4
+    default_gpus: 4
+    weights_gb: 22
+    kv_gb_per_100k: 6.4
+    max_parallel: 8
+- id: gemma4-26b-q4k-mtp
+  requires_weights: true
+  name: Gemma4 26B
+  short: Gemma4 Q4K
+  category: LLM
+  backend: llama.cpp
+  quant: Q4_K_M
+  port: 18031
+  group: gemma
+  vram: 8 GB ×4
+  tps: 82.4 tok/s @20k
+  ctx: 256k
+  sysd: ai-gemma4-26b-q4k-mtp
+  desc: Q4_K_M 18G · Flash Attention · 256k · repetition penalty 1.05
+  in:
+  - text
+  - image
+  out:
+  - text
+  accel: ''
+  hf: https://huggingface.co/HauhauCS/Gemma4-26B-A4B-Uncensored-HauhauCS-Balanced
+  uncensored: true
+  parallel:
+    enabled: true
+    gpu_per_instance: 1
+    max_gpus: 4
+    ctx_options:
+    - 65536
+    - 131072
+    - 262144
+    default_ctx: 262144
+    gpu_options:
+    - 1
+    - 2
+    - 3
+    - 4
+    default_gpus: 4
+    weights_gb: 18
+    kv_gb_per_100k: 4
+    max_parallel: 8
+- id: qwen38-flash-next-strata
+  requires_weights: true
+  name: Qwen 3.8 Flash-Next 125B
+  short: Flash-Next Strata
+  category: LLM
+  backend: Strata
+  quant: UD-IQ4_XS
+  port: 18029
+  group: flash-next
+  vram: adaptive cache · GPU + RAM
+  tps: 110.1 tok/s @20k
+  ctx: 256k
+  sysd: ai-qwen38-flash-next-strata
+  desc: Full 125B MoE · UD-IQ4_XS · Strata CPU/RAM/GPU expert cache · MTP · text
+  in: [text]
+  out: [text]
+  accel: MTP
+  hf: https://huggingface.co/unsloth/Qwen3.8-Flash-Next-GGUF
+  uncensored: false
+  parallel:
+    enabled: true
+    gpu_per_instance: 1
+    max_gpus: 4
+    ctx_options: [65536, 131072, 196608, 262144]
+    default_ctx: 262144
+    gpu_options: [1, 2, 3, 4]
+    default_gpus: 4
+    # Dense weights + KV only; experts spill to RAM and the cache adapts.
+    weights_gb: 5
+    kv_gb_per_100k: 3
+    max_parallel: 1
+- id: qwen38-flash-next-uncensored-strata
+  requires_weights: true
+  name: Qwen 3.8 Flash-Next 125B Uncensored
+  short: Flash-Next Uncensored
+  category: LLM
+  backend: Strata
+  quant: UD-IQ4_XS
+  port: 18030
+  group: flash-next
+  vram: adaptive cache · GPU + RAM
+  tps: 106.1 tok/s @20k
+  ctx: 256k
+  sysd: ai-qwen38-flash-next-uncensored-strata
+  desc: OrcaRouter uncensored · Dyluhn UD-IQ4_XS recipe · full 125B MoE · Strata · MTP · text
+  in: [text]
+  out: [text]
+  accel: MTP
+  hf: https://huggingface.co/Dyluhn/Qwen3.8-Flash-Next-Uncensored-R9V-IQ4_XS
+  uncensored: true
+  parallel:
+    enabled: true
+    gpu_per_instance: 1
+    max_gpus: 4
+    ctx_options: [65536, 131072, 196608, 262144]
+    default_ctx: 262144
+    gpu_options: [1, 2, 3, 4]
+    default_gpus: 4
+    weights_gb: 5
+    kv_gb_per_100k: 3
+    max_parallel: 1
+- id: qwen38-35b-q8-llama
+  name: Qwen 3.8 35B
+  short: Qwen3.8 35B Q8
+  category: LLM
+  backend: llama.cpp
+  quant: Q8_0
+  port: 18027
+  group: qwen
+  vram: ~21 GB ×4
+  tps: —
+  ctx: 256k
+  sysd: ai-qwen38-35b-q8-llama
+  desc: Q8_0 38G distill MoE 35B/3B · native MTP + vision · 256k · GPU select
+  in:
+  - text
+  - image
+  out:
+  - text
+  accel: MTP native
+  hf: https://huggingface.co/empero-ai/Qwen3.8-35B-A3B-Distill-GGUF
+  parallel:
+    enabled: true
+    gpu_per_instance: 1
+    max_gpus: 4
+    ctx_options:
+    - 65536
+    - 131072
+    - 262144
+    default_ctx: 262144
+    gpu_options:
+    - 1
+    - 2
+    - 3
+    - 4
+    default_gpus: 4
+    weights_gb: 39
+    kv_gb_per_100k: 2
+    max_parallel: 8
+  requires_weights: true
+- id: qwen35-122b-q4k-llama
+  name: Qwen 3.5 122B
+  short: Qwen3.5 122B Q4K
+  category: LLM
+  backend: llama.cpp
+  quant: Q4_K_M
+  port: 18028
+  group: qwen
+  vram: ~22 GB ×4
+  tps: —
+  ctx: 256k
+  sysd: ai-qwen35-122b-q4k-llama
+  desc: Uncensored HauhauCS Aggressive MoE 122B/10B · Q4_K_M 74G + MTP merged · 256k
+    · GPU select
+  in:
+  - text
+  - image
+  out:
+  - text
+  accel: MTP x3
+  hf: https://huggingface.co/HauhauCS/Qwen3.5-122B-A10B-Uncensored-HauhauCS-Aggressive
+  parallel:
+    enabled: true
+    gpu_per_instance: 1
+    max_gpus: 4
+    ctx_options:
+    - 65536
+    - 131072
+    - 262144
+    default_ctx: 262144
+    gpu_options:
+    - 1
+    - 2
+    - 3
+    - 4
+    default_gpus: 4
+    weights_gb: 77
+    kv_gb_per_100k: 2.5
+    max_parallel: 8
+  requires_weights: true
+  uncensored: true
+- id: gpt-oss-120b
+  name: GPT-OSS 120B
+  short: GPT-OSS 120B
+  category: LLM
+  backend: llama.cpp
+  quant: MXFP4
+  port: 18041
+  group: gpt-oss
+  vram: 16 GB ×4
+  tps: —
+  ctx: 128k
+  sysd: ai-gpt-oss-120b
+  desc: Uncensored HauhauCS Aggressive 61G MXFP4 native
+  in:
+  - text
+  out:
+  - text
+  accel: ''
+  hf: https://huggingface.co/Unrestricted/GPTOSS-120B-Uncensored-HauhauCS-Aggressive
+  parallel:
+    enabled: true
+    gpu_per_instance: 1
+    max_gpus: 4
+    ctx_options:
+    - 131072
+    default_ctx: 131072
+    gpu_options:
+    - 1
+    - 2
+    - 3
+    - 4
+    default_gpus: 4
+    weights_gb: 61
+    kv_gb_per_100k: 2.5
+    max_parallel: 4
+  requires_weights: true
+  uncensored: true
+- id: qwen38-flash-next-iq3-strata
+  name: Qwen 3.8 Flash-Next 125B
+  short: Flash-Next IQ3 Strata
+  category: LLM
+  backend: Strata
+  quant: IQ3_XXS
+  port: 18033
+  group: flash-next
+  vram: adaptive cache · GPU + RAM
+  tps: 113.2 tok/s @20k
+  ctx: 256k
+  sysd: ai-qwen38-flash-next-iq3-strata
+  desc: Full 125B MoE · IQ3_XXS · Strata CPU/RAM/GPU expert cache · MTP · text
+  in:
+  - text
+  out:
+  - text
+  accel: MTP
+  hf: https://huggingface.co/ISTA-DASLab/Qwen3.8-Flash-Next-GSQ-RCO-GGUF
+  parallel:
+    enabled: true
+    gpu_per_instance: 1
+    max_gpus: 4
+    ctx_options:
+    - 65536
+    - 131072
+    - 196608
+    - 262144
+    default_ctx: 262144
+    gpu_options:
+    - 1
+    - 2
+    - 3
+    - 4
+    default_gpus: 4
+    weights_gb: 5
+    kv_gb_per_100k: 3
+    max_parallel: 1
+  requires_weights: true
+- id: comfyui
+  name: FLUX & Video Studio
+  short: ComfyUI
+  category: Image
+  backend: docker-compose
+  quant: ''
+  port: 8188
+  group: comfyui
+  vram: 6–16 GB
+  tps: —
+  ctx: —
+  sysd: ai-comfyui
+  desc: FLUX · SDXL · MiniMax-H3 · LTX · Wan 2.1
+  in:
+  - text
+  - image
+  out:
+  - image
+  - video
+  sub:
+  - name: FLUX.1-dev
+    tag: img
+    vram: ~12 GB
+    hf: https://huggingface.co/black-forest-labs/FLUX.1-dev
+  - name: SDXL
+    tag: img
+    vram: ~8 GB
+    hf: https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0
+  - name: MiniMax-H3
+    tag: vid
+    vram: ~16 GB
+    hf: https://huggingface.co/MiniMaxAI/MiniMax-Video-01
+  - name: LTX-Video
+    tag: vid
+    vram: ~10 GB
+    hf: https://huggingface.co/Lightricks/LTX-Video
+  - name: Wan 2.1
+    tag: vid
+    vram: ~14 GB
+    hf: https://huggingface.co/Wan-AI/Wan2.1-T2V-14B
+  accel: ''
+  hf: https://github.com/comfyanonymous/ComfyUI
+- id: voice
+  name: Voice Suite
+  short: Kokoro & Whisper
+  category: Voice
+  backend: docker-compose
+  quant: ''
+  port: 8010
+  group: voice
+  vram: 7 GB
+  tps: —
+  ctx: —
+  sysd: ai-voice
+  desc: Kokoro TTS + faster-whisper STT · realtime
+  in:
+  - text
+  - audio
+  out:
+  - speech
+  - text
+  sub:
+  - name: Kokoro TTS
+    tag: tts
+    vram: ~1 GB
+  - name: faster-whisper large-v3-turbo
+    tag: stt
+    vram: ~6 GB
+  accel: ''
+  hf: https://huggingface.co/hexgrad/Kokoro-82M
+- id: music
+  name: ACE-Step 1.5
+  short: ACE-Step
+  category: Music
+  backend: docker-compose
+  quant: ''
+  port: 8017
+  group: music
+  vram: 17 GB
+  tps: —
+  ctx: —
+  sysd: ai-music
+  desc: Text → Music · up to 3 min · 44.1 kHz
+  in:
+  - text
+  - image
+  out:
+  - music
+  accel: ''
+  hf: https://huggingface.co/ACE-Step/ACE-Step-v1-3.5
+- id: threed
+  name: Hunyuan3D-2.1
+  short: Hunyuan3D
+  category: 3D
+  backend: docker-compose
+  quant: ''
+  port: 8020
+  group: threed
+  vram: 16 GB
+  tps: —
+  ctx: —
+  sysd: ai-threed
+  desc: Image → 3D · GLB/OBJ · textured
+  in:
+  - image
+  out:
+  - 3d
+  accel: ''
+  hf: https://huggingface.co/tencent/Hunyuan3D-2
+ports:
+  glm53-flash-maya-m: 18037
+  glm53-flash-maya-m-derisked: 18038
+  nemotron35-super-q4k: 18034
+  nemotron35-super-nvfp4: 18035
+  nemotron35-super-uncensored: 18036
+  qwen-q4k-llama: 18021
+  qwen-q6k-llama: 18026
+  gemma4-26b-q4k-mtp: 18031
+  qwen38-flash-next-strata: 18029
+  qwen38-flash-next-uncensored-strata: 18030
+  comfyui: 8188
+  voice: 8010
+  music: 8017
+  threed: 8020
+  qwen38-35b-q8-llama: 18027
+  qwen35-122b-q4k-llama: 18028
+  gpt-oss-120b: 18041
+  qwen38-flash-next-iq3-strata: 18033

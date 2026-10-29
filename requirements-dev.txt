@@ -1,0 +1,5 @@
+# The Python application is retained only as an API compatibility test fixture.
+fastapi==0.141.1
+uvicorn==0.52.4
+psutil==7.2.2
+PyYAML==6.0.3

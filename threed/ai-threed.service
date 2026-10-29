@@ -1,0 +1,12 @@
+[Unit]
+Description=3D Hunyuan3D-2.1 :8020 (auto-GPU)
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/sbin/ai-threed.sh
+ExecStop=/usr/bin/docker compose -f /srv/ai/stack/docker-compose.yml stop threed
+TimeoutStartSec=300
+TimeoutStopSec=30

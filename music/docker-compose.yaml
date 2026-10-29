@@ -1,0 +1,93 @@
+###############################################################################
+# ACE-Step 1.5 — Music Generation Service
+#
+# Usage:
+#   docker compose up -d              # start
+#   docker compose logs -f ace-step   # follow logs
+#   docker compose down               # stop
+#
+# First run:
+#   docker compose build              # build the image
+#   docker compose up -d
+#
+# GPU: 1x RTX 3090 (24 GB VRAM) — a SINGLE dedicated GPU, default GPU 1.
+#     ACE-Step needs >= ~18 GiB FREE on that GPU (DiT ~15 GiB + LM KV + runtime).
+#     Run ./prestart-check.sh first — it finds a free GPU and prints the
+#     exact `MUSIC_GPUS=<n> docker compose up -d music` command [E-02].
+# Port: 8016 (Gradio web UI), 8017 (REST API)
+###############################################################################
+
+services:
+  ace-step:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: acestep:latest
+    container_name: ace-step
+    hostname: ace-step
+    restart: unless-stopped
+    stop_grace_period: 5s
+
+    ports:
+      - "8016:8016"   # Gradio web UI
+      - "8017:8017"   # REST API server (optional)
+
+    # ── GPU access ──────────────────────────────────────────────────────────
+    # Single GPU (GPU 3 in balanced profile). Change device_ids for other GPUs.
+    deploy:
+      resources:
+        limits:
+          memory: 20G           # model weights + runtime overhead
+        reservations:
+          memory: 8G
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu, compute, utility, graphics, video]
+
+    environment:
+      # ── NVIDIA ─────────────────────────────────────────────────────────────
+      # [E-02] SINGLE dedicated GPU (default 1). Override with MUSIC_GPUS=<n>
+      # after ./prestart-check.sh confirms >= ~18 GiB free on that GPU.
+      - NVIDIA_VISIBLE_DEVICES=${MUSIC_GPUS:-1}
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility,graphics,video
+      # ── ACE-Step config ────────────────────────────────────────────────────
+      - ACESTEP_MODE=gradio
+      - ACESTEP_INIT_SERVICE=true
+      # turbo DiT + 1.7B LM — the complete set on disk (XL-turbo shards 3/4 + lm-4B were never downloaded)
+      - ACESTEP_CONFIG_PATH=acestep-v15-turbo
+      - ACESTEP_LM_MODEL_PATH=acestep-5Hz-lm-1.7B
+      - ACESTEP_LLM_BACKEND=vllm
+      # ── Ports ──────────────────────────────────────────────────────────────
+      - GRADIO_PORT=8016
+      - ACESTEP_API_PORT=8017
+      # ── Performance ────────────────────────────────────────────────────────
+      - HF_HUB_ENABLE_HF_TRANSFER=1
+      - TOKENIZERS_PARALLELISM=false
+      # ── Misc ───────────────────────────────────────────────────────────────
+      - TZ=Europe/Moscow
+
+    volumes:
+      # ── Persistent storage ──────────────────────────────────────────────────
+      # Model checkpoints (persistent, ~20GB download on first run)
+      - /srv/ai/models/music/checkpoints:/app/checkpoints
+      # Generated audio outputs
+      - /srv/ai/models/music/outputs:/app/gradio_outputs
+      # HuggingFace cache (shared with other services to avoid re-downloading)
+      - /home/user/.cache/huggingface:/app/checkpoints/hf-cache
+
+    # ── Logging ──────────────────────────────────────────────────────────────
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "3"
+
+    # ── Health check ─────────────────────────────────────────────────────────
+    # First startup downloads ~20GB models — start_period=180s gives time
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8016/"]
+      interval: 60s
+      timeout: 10s
+      retries: 30
+      start_period: 180s

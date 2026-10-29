@@ -1,0 +1,12 @@
+[Unit]
+Description=Gemma 4 31B Q8_K_XL llama :18030 (1-4 GPU, ctx 32k-256k, parallel 1-8)
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/sbin/ai-gemma-q8-llama.sh up
+ExecStop=/usr/local/sbin/ai-gemma-q8-llama.sh down
+TimeoutStartSec=600
+TimeoutStopSec=30

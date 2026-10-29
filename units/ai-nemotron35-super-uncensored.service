@@ -1,0 +1,12 @@
+[Unit]
+Description=Nemotron 3.5 Super VL 120B Uncensored AD-Q4_K_S :18036 (4 GPUs)
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/sbin/ai-nemotron35-super-uncensored.sh up
+ExecStop=/usr/local/sbin/ai-nemotron35-super-uncensored.sh down
+TimeoutStartSec=900
+TimeoutStopSec=60

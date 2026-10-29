@@ -1,0 +1,93 @@
+/* ═══════════════════════════════════════════════════════════════════
+   animations.css — @keyframes, animation classes, transitions
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── Core keyframes ─────────────────────────────────────────────── */
+@keyframes fade-in   { from { opacity: 0 } to { opacity: 1 } }
+@keyframes pop-in    { from { opacity: 0; transform: translateY(12px) scale(.97) } to { opacity: 1; transform: none } }
+@keyframes slide-in  { from { opacity: 0; transform: translateX(28px) } to { opacity: 1; transform: none } }
+@keyframes slide-out { from { opacity: 1; transform: translateX(0) } to { opacity: 0; transform: translateX(28px) } }
+@keyframes rise      { from { opacity: 0; transform: translateY(14px) } to { opacity: 1; transform: none } }
+@keyframes spin      { to { transform: rotate(360deg) } }
+@keyframes pill-pulse { 0%,100% { opacity: 1 } 50% { opacity: .5 } }
+
+/* ── NEW: GPU bar shimmer (critical VRAM) ──────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: 200% 0 }
+  100% { background-position: -200% 0 }
+}
+
+/* ── NEW: Running card glow ────────────────────────────────────── */
+@keyframes glow-pulse {
+  from { box-shadow: 0 1px 3px rgba(0,0,0,0.4), 0 0 8px rgba(34,197,94,0.06) }
+  to   { box-shadow: 0 1px 3px rgba(0,0,0,0.4), 0 0 18px rgba(34,197,94,0.16) }
+}
+
+/* ── NEW: Toast exit ───────────────────────────────────────────── */
+@keyframes toast-exit {
+  from { opacity: 1; transform: translateX(0) }
+  to   { opacity: 0; transform: translateY(-20px) }
+}
+
+/* ── NEW: Button ripple ────────────────────────────────────────── */
+@keyframes ripple-expand {
+  to { transform: translate(-50%,-50%) scale(4); opacity: 0 }
+}
+
+/* ── NEW: Chart endpoint pulse ─────────────────────────────────── */
+@keyframes dot-pulse {
+  0%,100% { r: 2.4 }
+  50%     { r: 4 }
+}
+
+/* ── Applied animation classes ─────────────────────────────────── */
+.modal-overlay { animation: fade-in .16s ease }
+.modal-overlay .modal { animation: pop-in .2s cubic-bezier(.2,.9,.3,1.15) }
+.toast { animation: slide-in .22s ease }
+.toast.exiting { animation: toast-exit .25s ease forwards }
+.model.enter { animation: rise .4s ease backwards }
+.spinner { width:34px; height:34px; border-radius:50%; border:3px solid var(--border); border-top-color:var(--ok); animation: spin .8s linear infinite }
+.loading { display:flex; flex-direction:column; align-items:center; gap:14px; padding:140px 20px; color:var(--fg3); font-size:14px }
+.live-dot { width:9px; height:9px; border-radius:50%; background:var(--ok); box-shadow:0 0 8px rgba(34,197,94,.6); animation: pill-pulse 1.5s ease-in-out infinite; flex-shrink:0 }
+.pill-warn, .pill-stopping { animation: pill-pulse 1.5s ease-in-out infinite }
+
+/* ── NEW: Running card glow (applied) ──────────────────────────── */
+.model.running { animation: glow-pulse 3s ease-in-out infinite alternate }
+
+/* ── NEW: GPU bar shimmer (applied) ────────────────────────────── */
+.gpu-fill.crit {
+  background: linear-gradient(90deg, var(--bad), #ff6b6b, var(--bad)) !important;
+  background-size: 200% 100% !important;
+  animation: shimmer 1.5s linear infinite;
+}
+
+/* ── NEW: Button ripple container ──────────────────────────────── */
+.btn { position: relative; overflow: hidden }
+.btn .ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+  width: 20px; height: 20px;
+  pointer-events: none;
+  animation: ripple-expand .5s ease-out forwards;
+}
+
+/* ── Button press ──────────────────────────────────────────────── */
+.btn:disabled { opacity: .55; cursor: progress; transform: none }
+.btn:active:not(:disabled) { transform: scale(.97) }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--fg3); outline-offset: 2px }
+
+/* ── Transitions ───────────────────────────────────────────────── */
+body, .gpu, .sys-card, .login-box, .io-box, .io-arrow, .specs,
+.io-item, .sub-tag, .log-box, .stats-kpi-item, .stats-chart-box {
+  transition: background-color .25s ease, border-color .25s ease, color .25s ease
+}
+
+/* ── Reduced motion ────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}

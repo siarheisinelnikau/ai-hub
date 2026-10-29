@@ -1,0 +1,19 @@
+[Unit]
+Description=Qwen 3.8 Flash-Next IQ3_XXS - Strata :18033
+After=network.target
+
+[Service]
+Type=simple
+User=user
+WorkingDirectory=/srv/ai/strata
+ExecStart=/usr/local/sbin/ai-qwen38-flash-next-iq3-strata.sh
+Environment=PYTHONUNBUFFERED=1
+Environment=AIHUB_MODEL_ID=qwen38-flash-next-iq3-strata
+Environment=STRATA_PORT=18033
+Environment=STRATA_INSTALL_CONFIG=strata-iq3_xxs.json
+KillMode=control-group
+TimeoutStopSec=45
+LimitMEMLOCK=infinity
+
+[Install]
+WantedBy=multi-user.target
