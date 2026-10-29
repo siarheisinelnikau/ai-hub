@@ -11,7 +11,7 @@ cd release/ai-hub-public
 python scripts/check.py
 ```
 
-Inspect the files, select the project's license and author identity, then create
+Inspect the files, verify the MIT license and author identity, then create
 a new repository with an English initial commit. Never copy the private `.git`,
 add the old repository as a remote, or push old refs into the public repository.
 
@@ -25,7 +25,7 @@ go run github.com/zricethezav/gitleaks/v8@v8.30.1 git . --redact --no-banner
 
 Before publishing:
 
-1. Add the chosen license and review third-party notices.
+1. Include `LICENSE` (MIT) and review third-party notices.
 2. Run all checks and secret-scan files and new Git history.
 3. Verify a fresh checkout starts with private configuration and no models.
 4. Validate installation, restart, rollback, lifecycle and streaming on a

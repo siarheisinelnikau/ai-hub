@@ -68,7 +68,7 @@ def main():
         hashes.append({"path": name, "sha256": hashlib.sha256(data).hexdigest()})
     (destination / "SOURCE_MANIFEST.json").write_text(json.dumps({"files": hashes}, indent=2) + "\n", encoding="utf-8")
     print(f"Exported {len(files)} files to {destination}")
-    print("No Git history or remotes copied. Run validation and choose a license before publication.")
+    print("No Git history or remotes copied. Run validation and review LICENSE and third-party notices before publication.")
 
 
 if __name__ == "__main__":

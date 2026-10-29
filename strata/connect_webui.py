@@ -1,5 +1,6 @@
 """Connect all registered LLMs and remove retired Open WebUI providers."""
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
@@ -42,7 +43,10 @@ for model in registry['models']:
         'model_id': prefix+'.'+api_id if prefix else api_id,
         'name': model['name']+' '+model['quant']})
 assert {p['profile'] for p in providers} == set(API_MODELS), 'Update WebUI aliases for the model registry'
-providers.append({'url':'http://host.docker.internal:8080/v1', 'key':'none', 'profile':'universal',
+hub_token = os.environ.get('AIHUB_CLIENT_TOKEN') or os.environ.get('AIHUB_TOKEN') or Path(os.environ.get('AIHUB_TOKEN_FILE', '/srv/ai-hub/token')).read_text().strip()
+if not hub_token or hub_token in ('none', 'no-key-required', 'dev-token-123'):
+    raise ValueError('A private ai-hub token is required for the Universal API')
+providers.append({'url':'http://host.docker.internal:8080/v1', 'key':hub_token, 'profile':'universal',
     'api_id':'universal', 'prefix':'', 'model_id':'universal', 'name':'AI Hub Universal'})
 assert len({p['model_id'] for p in providers}) == len(providers)
 unit = Path('/etc/systemd/system/ai-open-webui.service')

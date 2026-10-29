@@ -18,6 +18,9 @@
 
 ### Added
 
+- MIT license for the original project code and artwork.
+- Authenticated Universal API credentials in OpenCode, pi and Open WebUI
+  configuration generators, with separate remote-client token settings.
 - English installation, model setup, operations, configuration, security,
   contribution and release documentation.
 - Original local model-family illustrations, a first-run empty state, and

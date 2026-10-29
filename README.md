@@ -181,6 +181,6 @@ English; recorded prompts and Unicode tests retain their original language.
 
 ## License
 
-A license for the project code has not yet been selected. Do not assume a
-reuse grant until a `LICENSE` file is added. Third-party components and model
-weights retain their own terms; no weights are distributed here.
+ai-hub is licensed under the [MIT License](LICENSE).
+Third-party components and model weights retain their own terms; no weights
+are distributed here. See [third-party notices](THIRD_PARTY_NOTICES.md).

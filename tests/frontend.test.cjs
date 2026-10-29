@@ -36,3 +36,24 @@ test('login clears legacy stored credentials and reports network errors', async 
   assert.match(nodes.lerr.textContent, /Cannot reach/);
   assert.equal(nodes['login-submit'].disabled, false);
 });
+
+test('client generators prefer the remote hub key and reject missing credentials', () => {
+  const source = fs.readFileSync('scripts/env.cjs', 'utf8');
+  function load(env, fileToken) {
+    const module = { exports: {} };
+    vm.runInNewContext(source, {
+      module, __dirname: '/project/scripts', URL,
+      process: { env: { AIHUB_ENV_FILE: '-', ...env } },
+      require: name => name === 'node:fs' ? {
+        existsSync: () => fileToken !== undefined,
+        readFileSync: () => fileToken,
+      } : name === 'node:os' ? { homedir: () => '/private' } : require(name),
+    });
+    return module.exports;
+  }
+  assert.equal(load({ AIHUB_TOKEN: 'local-test-token' }, 'remote-test-token\n').hubToken(), 'remote-test-token');
+  assert.equal(load({ AIHUB_CLIENT_TOKEN: 'explicit-test-token' }, 'remote-test-token').hubToken(), 'explicit-test-token');
+  assert.equal(load({ AIHUB_TOKEN: 'local-test-token' }).hubToken(), 'local-test-token');
+  assert.throws(() => load({}).hubToken(), /authenticated Universal API/);
+  assert.throws(() => load({ AIHUB_CLIENT_TOKEN: 'none' }).hubToken(), /authenticated Universal API/);
+});

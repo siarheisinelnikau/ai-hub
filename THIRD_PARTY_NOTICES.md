@@ -1,5 +1,8 @@
 # Third-party components and assets
 
+Original ai-hub code and artwork are covered by the [MIT License](LICENSE).
+This does not change the licenses of third-party components or model weights.
+
 No model weights are distributed. Every model, engine, image, provider and
 dataset has its own terms. Integration names do not imply endorsement.
 
