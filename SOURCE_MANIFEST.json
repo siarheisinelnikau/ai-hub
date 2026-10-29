@@ -50,7 +50,7 @@
     },
     {
       "path": "README.md",
-      "sha256": "aab76611fbc5d035a1e733bb2c329f1996a0f30b27a4ba68e2771d9865787d9f"
+      "sha256": "c4e9312fda5c8ba1233f009c33bd17054c889546620fa667026acf00d1e5b9c8"
     },
     {
       "path": "SECURITY.md",
@@ -171,6 +171,10 @@
     {
       "path": "docs/architecture.md",
       "sha256": "2361019659e02fc66e125773dc9e75190f89f320cd69c6c8e96a1f35366e2f78"
+    },
+    {
+      "path": "docs/benchmarks.md",
+      "sha256": "82c752b090a42b1aa66678a775d9e5a8b02be2c155ba1729505f94dfb9a11811"
     },
     {
       "path": "docs/configuration.md",
@@ -654,7 +658,7 @@
     },
     {
       "path": "requirements-dev.txt",
-      "sha256": "736ade06d9b9dd87e9fbbf3b7c252e81acad34f0189173d7ddcfaf1fe041e76c"
+      "sha256": "8fae1790ee677cd65441f5e1e7aea997e8c68c7c2300bb6fd56abf2cd4fc6b96"
     },
     {
       "path": "scripts/check.py",
