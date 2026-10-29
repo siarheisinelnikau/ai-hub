@@ -454,6 +454,44 @@ func TestSafeReadWithinRoot(t *testing.T) {
 	}
 }
 
+func TestSafeReadSymlinkRoot(t *testing.T) {
+	dir := t.TempDir()
+	inside := filepath.Join(dir, "a.wav")
+	if err := os.WriteFile(inside, []byte("audio"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	alias := filepath.Join(t.TempDir(), "media")
+	if err := os.Symlink(dir, alias); err != nil {
+		t.Skipf("symlinks unavailable: %v", err)
+	}
+	api := NewMediaAPI(MediaConfig{OutDir: dir, ReadRoots: []string{alias}})
+	for _, path := range []string{inside, filepath.Join(alias, "a.wav")} {
+		data, name, err := api.SafeRead(path)
+		if err != nil || string(data) != "audio" || name != "a.wav" {
+			t.Fatalf("SafeRead(%q) = (%q, %q, %v)", path, data, name, err)
+		}
+	}
+}
+
+func TestSafeReadSiblingPrefixRejected(t *testing.T) {
+	dir := t.TempDir()
+	allowed := filepath.Join(dir, "media")
+	sibling := filepath.Join(dir, "media-private")
+	for _, path := range []string{allowed, sibling} {
+		if err := os.Mkdir(path, 0o755); err != nil {
+			t.Fatal(err)
+		}
+	}
+	outside := filepath.Join(sibling, "private.txt")
+	if err := os.WriteFile(outside, []byte("private fixture"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	api := NewMediaAPI(MediaConfig{OutDir: allowed, ReadRoots: []string{allowed}})
+	if _, _, err := api.SafeRead(outside); err == nil {
+		t.Fatal("SafeRead accepted a sibling with the same directory prefix")
+	}
+}
+
 func TestSafeReadOutsideRootRejected(t *testing.T) {
 	allowed := t.TempDir()
 	outside := t.TempDir() // different temp dir
