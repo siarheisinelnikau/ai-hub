@@ -1,0 +1,17 @@
+.context-speed{background:none;border:0;padding:0;color:var(--fg);font:inherit;font-weight:600;cursor:pointer;text-align:left;white-space:nowrap}
+.context-speed:hover{color:var(--accent,#22d3ee);text-decoration:underline;text-underline-offset:4px}
+.context-speed:focus-visible,.context-legend-item:focus-within{outline:2px solid #22d3ee;outline-offset:4px;border-radius:4px}
+.context-speed small{color:var(--fg3);font-weight:400;margin-left:4px}
+.context-modal{width:min(1100px,calc(100vw - 32px));max-width:1100px;max-height:90vh;overflow:auto;padding:26px}
+.context-heading{display:flex;gap:20px;align-items:flex-start;justify-content:space-between}
+.context-heading h2{margin:0 0 7px;font-size:22px}.context-heading p{margin:0;color:var(--fg3);font-size:13px;line-height:1.5}
+.context-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:20px 0 16px}.context-toolbar>span{margin-left:auto;font-size:12px;color:var(--fg3)}
+.context-legend{display:flex;flex-wrap:wrap;gap:10px 18px;margin:0 0 12px}
+.context-legend-item{display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer}.context-legend-item small{color:var(--fg3);font-size:11px}
+.context-legend-item i,.context-table i{display:inline-block;width:10px;height:10px;border-radius:50%;flex-shrink:0}.context-legend-item input{accent-color:#22d3ee}
+.context-chart-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px;background:var(--bg);padding:10px 0}
+.context-chart-wrap svg{display:block;width:100%;min-width:640px}.context-grid{stroke:var(--border);stroke-width:1}.context-tick{fill:var(--fg3);font-size:14px}.context-axis{fill:var(--fg2);font-size:15px}
+.context-empty{padding:50px 20px;text-align:center;color:var(--fg3);font-size:14px}.context-note{color:var(--fg3);font-size:12px;line-height:1.6;margin:12px 0 16px}
+.context-table-wrap{overflow-x:auto}.context-table{border-collapse:collapse;width:100%;font-size:12px;text-align:left;white-space:nowrap}.context-table th{font-weight:500;color:var(--fg3)}.context-table th,.context-table td{padding:9px 12px;border-bottom:1px solid var(--border)}.context-table i{margin-right:8px;width:8px;height:8px}
+[data-theme="light"] .context-modal{--fg3:#57534e}
+@media(max-width:600px){.context-modal{padding:17px;width:calc(100vw - 20px)}.context-heading h2{font-size:19px}.context-toolbar>span{margin-left:0;flex-basis:100%}.context-legend-item{font-size:12px}.context-note{font-size:11px}}

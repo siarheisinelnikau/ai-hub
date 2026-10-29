@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <circle cx="20" cy="20" r="1.2" fill="#2a2d36" opacity="0.35"/>
+    </pattern>
+    <radialGradient id="glow1" cx="20%" cy="0%" r="80%">
+      <stop offset="0%" stop-color="#1e293b" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="transparent" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="85%" cy="90%" r="60%">
+      <stop offset="0%" stop-color="#334155" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="transparent" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="800" fill="#07080a"/>
+  <rect width="1200" height="800" fill="url(#grid)"/>
+  <rect width="1200" height="800" fill="url(#glow1)"/>
+  <rect width="1200" height="800" fill="url(#glow2)"/>
+  <!-- subtle circuit lines -->
+  <g stroke="#1e293b" stroke-width="0.8" opacity="0.18" fill="none">
+    <path d="M0 120 H 400 V 240 H 800"/>
+    <path d="M0 360 H 300 V 480 H 700"/>
+    <path d="M400 0 V 200 H 900"/>
+    <path d="M600 800 V 600 H 1000"/>
+  </g>
+</svg>

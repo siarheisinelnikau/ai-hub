@@ -1,0 +1,926 @@
+{
+  "version": 1,
+  "date": "2026-10-22",
+  "status": "partial",
+  "protocol": {
+    "x": "Actual input context tokens",
+    "y": "Decode tokens per second; prefill excluded",
+    "baseline_tokens": 20480,
+    "output_tokens": 512,
+    "temperature": 0,
+    "gpus": 4,
+    "parallel": 1,
+    "trials": "3 at 20k, 2 elsewhere unless noted per curve/point; median; no prefix reuse",
+    "workload": "Repeated engineering archive, middle secret retrieval, then 1200-word Russian story",
+    "thinking": "Disabled",
+    "note": "Synthetic context; results depend on content, MTP acceptance and launch settings"
+  },
+  "models": [
+    {
+      "id": "qwen38-flash-next-strata",
+      "name": "Qwen 3.8 Flash-Next 125B",
+      "short": "Flash-Next Strata",
+      "quant": "UD-IQ4_XS",
+      "backend": "Strata",
+      "max_context": 262144,
+      "gpus": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "parallel": 1,
+      "status": "complete",
+      "points": [
+        {
+          "target_tokens": 20480,
+          "input_tokens": 20404,
+          "decode_tps": 110.1,
+          "min_tps": 108.3,
+          "max_tps": 111.1,
+          "output_tokens": 512,
+          "prompt_tps": 3120.2,
+          "retrieval_ok": true,
+          "trials": 3
+        },
+        {
+          "target_tokens": 65536,
+          "input_tokens": 65449,
+          "decode_tps": 104.8,
+          "min_tps": 100.9,
+          "max_tps": 108.6,
+          "output_tokens": 512,
+          "prompt_tps": 5180.4,
+          "retrieval_ok": true,
+          "trials": 2
+        },
+        {
+          "target_tokens": 131072,
+          "input_tokens": 131010,
+          "decode_tps": 102.2,
+          "min_tps": 101.5,
+          "max_tps": 103.0,
+          "output_tokens": 512,
+          "prompt_tps": 5948.1,
+          "retrieval_ok": true,
+          "trials": 2
+        },
+        {
+          "target_tokens": 196608,
+          "input_tokens": 196528,
+          "decode_tps": 95.1,
+          "min_tps": 93.4,
+          "max_tps": 96.7,
+          "output_tokens": 512,
+          "prompt_tps": 6051.2,
+          "retrieval_ok": true,
+          "trials": 2
+        },
+        {
+          "target_tokens": 245760,
+          "input_tokens": 245692,
+          "decode_tps": 94.9,
+          "min_tps": 94.8,
+          "max_tps": 95.1,
+          "output_tokens": 512,
+          "prompt_tps": 6018.9,
+          "retrieval_ok": true,
+          "trials": 2
+        }
+      ],
+      "tps_20k": 110.1,
+      "resources": {
+        "gpu_memory_mib": "0, 20140\n1, 19188\n2, 19578\n3, 21448"
+      }
+    },
+    {
+      "id": "qwen-q4k-llama",
+      "name": "Qwen 3.8 27B",
+      "short": "Qwen Q4K",
+      "quant": "Q4_K_M",
+      "backend": "llama.cpp",
+      "max_context": 262144,
+      "gpus": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "parallel": 1,
+      "status": "complete",
+      "points": [
+        {
+          "target_tokens": 20480,
+          "input_tokens": 20404,
+          "decode_tps": 41.9,
+          "min_tps": 41.01980204854979,
+          "max_tps": 43.211257724963644,
+          "output_tokens": 512,
+          "prompt_tps": 1886.8,
+          "retrieval_ok": true,
+          "trials": 3
+        },
+        {
+          "target_tokens": 65536,
+          "input_tokens": 65449,
+          "decode_tps": 38.8,
+          "min_tps": 37.43123841215661,
+          "max_tps": 40.21216283360553,
+          "output_tokens": 512,
+          "prompt_tps": 1576.2,
+          "retrieval_ok": true,
+          "trials": 2
+        },
+        {
+          "target_tokens": 131072,
+          "input_tokens": 131010,
+          "decode_tps": 35.4,
+          "min_tps": 35.32547586907065,
+          "max_tps": 35.514527665817056,
+          "output_tokens": 512,
+          "prompt_tps": 1213.4,
+          "retrieval_ok": true,
+          "trials": 2
+        },
+        {
+          "target_tokens": 196608,
+          "input_tokens": 196528,
+          "decode_tps": 31.7,
+          "min_tps": 31.603965574066244,
+          "max_tps": 31.80741562196009,
+          "output_tokens": 512,
+          "prompt_tps": 970.3,
+          "retrieval_ok": true,
+          "trials": 2
+        },
+        {
+          "target_tokens": 245760,
+          "input_tokens": 245692,
+          "decode_tps": 28.6,
+          "min_tps": 27.21431888577868,
+          "max_tps": 29.960250779611453,
+          "output_tokens": 512,
+          "prompt_tps": 843.6,
+          "retrieval_ok": true,
+          "trials": 2
+        }
+      ],
+      "tps_20k": 41.9,
+      "resources": {
+        "gpu_memory_mib": "0, 14328\n1, 12838\n2, 13152\n3, 16648"
+      }
+    },
+    {
+      "id": "qwen-q6k-llama",
+      "name": "Qwen 3.8 27B",
+      "short": "Qwen Q6K",
+      "quant": "Q6_K",
+      "backend": "llama.cpp",
+      "max_context": 262144,
+      "gpus": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "parallel": 1,
+      "status": "complete",
+      "points": [
+        {
+          "target_tokens": 20480,
+          "input_tokens": 20404,
+          "decode_tps": 39.0,
+          "min_tps": 38.323086719895514,
+          "max_tps": 40.59966419072276,
+          "output_tokens": 512,
+          "prompt_tps": 1696.8,
+          "retrieval_ok": true,
+          "trials": 3
+        },
+        {
+          "target_tokens": 65536,
+          "input_tokens": 65449,
+          "decode_tps": 37.0,
+          "min_tps": 36.44128268180456,
+          "max_tps": 37.65190351003423,
+          "output_tokens": 512,
+          "prompt_tps": 1442.4,
+          "retrieval_ok": true,
+          "trials": 2
+        },
+        {
+          "target_tokens": 131072,
+          "input_tokens": 131010,
+          "decode_tps": 32.4,
+          "min_tps": 32.01504243371461,
+          "max_tps": 32.74733546594748,
+          "output_tokens": 512,
+          "prompt_tps": 1132.1,
+          "retrieval_ok": true,
+          "trials": 2
+        },
+        {
+          "target_tokens": 196608,
+          "input_tokens": 196528,
+          "decode_tps": 29.5,
+          "min_tps": 29.219635595119914,
+          "max_tps": 29.737738173240423,
+          "output_tokens": 512,
+          "prompt_tps": 921.0,
+          "retrieval_ok": true,
+          "trials": 2
+        },
+        {
+          "target_tokens": 245760,
+          "input_tokens": 245692,
+          "decode_tps": 27.8,
+          "min_tps": 27.51477209422738,
+          "max_tps": 28.07812642519844,
+          "output_tokens": 512,
+          "prompt_tps": 807.5,
+          "retrieval_ok": true,
+          "trials": 2
+        }
+      ],
+      "tps_20k": 39.0,
+      "resources": {
+        "gpu_memory_mib": "0, 11724\n1, 10556\n2, 10872\n3, 13614"
+      }
+    },
+    {
+      "id": "gemma4-26b-q4k-mtp",
+      "name": "Gemma4 26B",
+      "short": "Gemma4 Q4K",
+      "quant": "Q4_K_M",
+      "backend": "llama.cpp",
+      "max_context": 262144,
+      "gpus": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "parallel": 1,
+      "status": "complete",
+      "points": [
+        {
+          "target_tokens": 20480,
+          "input_tokens": 20406,
+          "decode_tps": 82.4,
+          "min_tps": 81.76028779621305,
+          "max_tps": 82.45371942112648,
+          "output_tokens": 512,
+          "prompt_tps": 10569.5,
+          "retrieval_ok": true,
+          "trials": 3
+        },
+        {
+          "target_tokens": 65536,
+          "input_tokens": 65451,
+          "decode_tps": 74.9,
+          "min_tps": 74.47338137716585,
+          "max_tps": 75.29822000017978,
+          "output_tokens": 512,
+          "prompt_tps": 8301.3,
+          "retrieval_ok": true,
+          "trials": 2
+        },
+        {
+          "target_tokens": 131072,
+          "input_tokens": 131012,
+          "decode_tps": 66.7,
+          "min_tps": 66.66716243030118,
+          "max_tps": 66.73747020322146,
+          "output_tokens": 512,
+          "prompt_tps": 5819.2,
+          "retrieval_ok": true,
+          "trials": 2
+        },
+        {
+          "target_tokens": 196608,
+          "input_tokens": 196530,
+          "decode_tps": 60.4,
+          "min_tps": 60.19390211034402,
+          "max_tps": 60.52857197344703,
+          "output_tokens": 512,
+          "prompt_tps": 4436.6,
+          "retrieval_ok": true,
+          "trials": 2
+        },
+        {
+          "target_tokens": 245760,
+          "input_tokens": 245694,
+          "decode_tps": 55.9,
+          "min_tps": 55.67366992769831,
+          "max_tps": 56.14987864044332,
+          "output_tokens": 512,
+          "prompt_tps": 3758.1,
+          "retrieval_ok": true,
+          "trials": 2
+        }
+      ],
+      "quality_note": "No repeating loops in 11 final trials; occasional malformed Russian words remain at long context.",
+      "sampling": {
+        "temperature": 0,
+        "repeat_penalty": 1.05,
+        "repeat_last_n": 64
+      },
+      "tps_20k": 82.4,
+      "resources": {
+        "gpu_memory_mib": "0, 8012\n1, 6626\n2, 7646\n3, 6334"
+      }
+    },
+    {
+      "id": "qwen38-flash-next-uncensored-strata",
+      "name": "Qwen 3.8 Flash-Next 125B Uncensored",
+      "short": "Flash-Next Uncensored",
+      "quant": "UD-IQ4_XS",
+      "backend": "Strata",
+      "max_context": 262144,
+      "gpus": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "parallel": 1,
+      "status": "complete",
+      "points": [
+        {
+          "target_tokens": 20480,
+          "input_tokens": 20404,
+          "decode_tps": 106.1,
+          "min_tps": 105.6,
+          "max_tps": 106.7,
+          "output_tokens": 512,
+          "prompt_tps": 3135.3,
+          "retrieval_ok": true,
+          "trials": 3
+        },
+        {
+          "target_tokens": 65536,
+          "input_tokens": 65449,
+          "decode_tps": 105.6,
+          "min_tps": 103.6,
+          "max_tps": 107.6,
+          "output_tokens": 512,
+          "prompt_tps": 5175.9,
+          "retrieval_ok": true,
+          "trials": 2
+        },
+        {
+          "target_tokens": 131072,
+          "input_tokens": 131010,
+          "decode_tps": 98.8,
+          "min_tps": 98.7,
+          "max_tps": 98.8,
+          "output_tokens": 512,
+          "prompt_tps": 5903.3,
+          "retrieval_ok": true,
+          "trials": 2
+        },
+        {
+          "target_tokens": 196608,
+          "input_tokens": 196528,
+          "decode_tps": 96.0,
+          "min_tps": 95.7,
+          "max_tps": 96.2,
+          "output_tokens": 512,
+          "prompt_tps": 6005.1,
+          "retrieval_ok": true,
+          "trials": 2
+        },
+        {
+          "target_tokens": 245760,
+          "input_tokens": 245692,
+          "decode_tps": 90.2,
+          "min_tps": 87.0,
+          "max_tps": 93.3,
+          "output_tokens": 512,
+          "prompt_tps": 5997.1,
+          "retrieval_ok": true,
+          "trials": 2
+        }
+      ],
+      "tps_20k": 106.1,
+      "resources": {
+        "gpu_memory_mib": "0, 20130\n1, 19184\n2, 19578\n3, 21444"
+      }
+    },
+    {
+      "id": "nemotron35-super-q4k",
+      "name": "Nemotron 3.5 Super VL 120B",
+      "short": "Nemotron 3.5 Super",
+      "quant": "Q4_K_M",
+      "backend": "llama.cpp",
+      "max_context": 1048576,
+      "gpus": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "parallel": 1,
+      "status": "complete",
+      "quality_note": "21/21 archive retrieval checks passed, including two near-1M inputs. Native llama.cpp decode timing; full-window prefill takes about 51 minutes.",
+      "tps_20k": 70.3,
+      "points": [
+        {
+          "target_tokens": 2048,
+          "input_tokens": 1971,
+          "decode_tps": 71.9,
+          "min_tps": 70.93031422823238,
+          "max_tps": 72.80893894293675,
+          "output_tokens": 512,
+          "trials": 2,
+          "retrieval_ok": true,
+          "prompt_tps": 801.4,
+          "prefill_s": 2.46,
+          "record_files": [
+            "curve-2048-1.json",
+            "curve-2048-2.json"
+          ]
+        },
+        {
+          "target_tokens": 8192,
+          "input_tokens": 8140,
+          "decode_tps": 73.1,
+          "min_tps": 72.47967874056133,
+          "max_tps": 73.80700580143287,
+          "output_tokens": 512,
+          "trials": 2,
+          "retrieval_ok": true,
+          "prompt_tps": 982.1,
+          "prefill_s": 8.29,
+          "record_files": [
+            "curve-8192-1.json",
+            "curve-8192-2.json"
+          ]
+        },
+        {
+          "target_tokens": 20480,
+          "input_tokens": 20400,
+          "decode_tps": 70.3,
+          "min_tps": 67.78361506865579,
+          "max_tps": 73.31039621758525,
+          "output_tokens": 512,
+          "trials": 3,
+          "retrieval_ok": true,
+          "prompt_tps": 1033.0,
+          "prefill_s": 19.75,
+          "record_files": [
+            "curve-20480-1.json",
+            "curve-20480-2.json",
+            "curve-20480-3.json"
+          ]
+        },
+        {
+          "target_tokens": 65536,
+          "input_tokens": 65456,
+          "decode_tps": 66.7,
+          "min_tps": 65.87287489078122,
+          "max_tps": 67.51620818404787,
+          "output_tokens": 512,
+          "trials": 2,
+          "retrieval_ok": true,
+          "prompt_tps": 1004.8,
+          "prefill_s": 65.14,
+          "record_files": [
+            "curve-65536-1.json",
+            "curve-65536-2.json"
+          ]
+        },
+        {
+          "target_tokens": 131072,
+          "input_tokens": 130991,
+          "decode_tps": 66.6,
+          "min_tps": 65.43944443832595,
+          "max_tps": 67.79607048137862,
+          "output_tokens": 512,
+          "trials": 2,
+          "retrieval_ok": true,
+          "prompt_tps": 914.7,
+          "prefill_s": 143.2,
+          "record_files": [
+            "curve-131072-1.json",
+            "curve-131072-2.json"
+          ]
+        },
+        {
+          "target_tokens": 262144,
+          "input_tokens": 262067,
+          "decode_tps": 57.0,
+          "min_tps": 56.937753886948805,
+          "max_tps": 57.10385985215352,
+          "output_tokens": 512,
+          "trials": 2,
+          "retrieval_ok": true,
+          "prompt_tps": 749.5,
+          "prefill_s": 349.64,
+          "record_files": [
+            "curve-262144-1.json",
+            "curve-262144-2.json"
+          ]
+        },
+        {
+          "target_tokens": 392090,
+          "input_tokens": 392021,
+          "decode_tps": 52.7,
+          "min_tps": 51.3001990267017,
+          "max_tps": 54.066945247219266,
+          "output_tokens": 512,
+          "trials": 2,
+          "retrieval_ok": true,
+          "prompt_tps": 630.4,
+          "prefill_s": 621.84,
+          "record_files": [
+            "curve-392090-1.json",
+            "curve-392090-2.json"
+          ]
+        },
+        {
+          "target_tokens": 524288,
+          "input_tokens": 524219,
+          "decode_tps": 47.0,
+          "min_tps": 46.393664314147756,
+          "max_tps": 47.64096574856963,
+          "output_tokens": 512,
+          "trials": 2,
+          "retrieval_ok": true,
+          "prompt_tps": 541.0,
+          "prefill_s": 969.0,
+          "record_files": [
+            "curve-524288-1.json",
+            "curve-524288-2.json"
+          ]
+        },
+        {
+          "target_tokens": 786432,
+          "input_tokens": 786371,
+          "decode_tps": 40.0,
+          "min_tps": 39.043431347627205,
+          "max_tps": 40.899101516372205,
+          "output_tokens": 512,
+          "trials": 2,
+          "retrieval_ok": true,
+          "prompt_tps": 419.3,
+          "prefill_s": 1875.31,
+          "record_files": [
+            "curve-786432-1.json",
+            "curve-786432-2.json"
+          ]
+        },
+        {
+          "target_tokens": 1047552,
+          "input_tokens": 1047484,
+          "decode_tps": 32.2,
+          "min_tps": 31.171242668124172,
+          "max_tps": 33.26925366907457,
+          "output_tokens": 512,
+          "trials": 2,
+          "retrieval_ok": true,
+          "prompt_tps": 342.6,
+          "prefill_s": 3057.89,
+          "record_files": [
+            "curve-1047552-1.json",
+            "curve-1047552-2.json"
+          ]
+        }
+      ],
+      "sampling": {
+        "mtp": 3,
+        "ubatch": 512
+      },
+      "resources": {
+        "peak_memory_mib": {
+          "0": 21696.0,
+          "1": 19912.0,
+          "2": 21456.0,
+          "3": 22408.0
+        }
+      }
+    },
+    {
+      "id": "nemotron35-super-nvfp4",
+      "name": "Nemotron 3.5 Super VL 120B",
+      "short": "Nemotron NVFP4",
+      "quant": "NVFP4",
+      "backend": "SGLang",
+      "max_context": 393114,
+      "gpus": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "parallel": 1,
+      "status": "complete",
+      "quality_note": "19/19 archive retrieval checks passed, including two near-392k inputs. Streamed token-count decode timing. Text, vision and tool smoke tests passed at the enlarged allocation.",
+      "tps_20k": 71.7,
+      "points": [
+        {
+          "target_tokens": 2048,
+          "input_tokens": 1971,
+          "decode_tps": 129.2,
+          "min_tps": 124.91642565547863,
+          "max_tps": 133.5153090035626,
+          "output_tokens": 512,
+          "trials": 2,
+          "retrieval_ok": true,
+          "ttft_s": 1.15
+        },
+        {
+          "target_tokens": 8192,
+          "input_tokens": 8140,
+          "decode_tps": 103.0,
+          "min_tps": 102.16104364432083,
+          "max_tps": 103.7813478639503,
+          "output_tokens": 512,
+          "trials": 2,
+          "retrieval_ok": true,
+          "ttft_s": 4.01
+        },
+        {
+          "target_tokens": 20480,
+          "input_tokens": 20400,
+          "decode_tps": 71.7,
+          "min_tps": 70.7317928241947,
+          "max_tps": 80.879475067535,
+          "output_tokens": 512,
+          "trials": 3,
+          "retrieval_ok": true,
+          "ttft_s": 10.01
+        },
+        {
+          "target_tokens": 65536,
+          "input_tokens": 65456,
+          "decode_tps": 36.2,
+          "min_tps": 36.001515976631715,
+          "max_tps": 36.37978099203506,
+          "output_tokens": 512,
+          "trials": 2,
+          "retrieval_ok": true,
+          "ttft_s": 33.7
+        },
+        {
+          "target_tokens": 131072,
+          "input_tokens": 130991,
+          "decode_tps": 20.6,
+          "min_tps": 20.16850063476739,
+          "max_tps": 21.059403201957323,
+          "output_tokens": 512,
+          "trials": 2,
+          "retrieval_ok": true,
+          "ttft_s": 73.25
+        },
+        {
+          "target_tokens": 196608,
+          "input_tokens": 196529,
+          "decode_tps": 14.6,
+          "min_tps": 14.29692524942506,
+          "max_tps": 14.816683466968314,
+          "output_tokens": 512,
+          "trials": 2,
+          "retrieval_ok": true,
+          "ttft_s": 119.13
+        },
+        {
+          "target_tokens": 262144,
+          "input_tokens": 262067,
+          "decode_tps": 11.3,
+          "min_tps": 11.169064203329965,
+          "max_tps": 11.386094940893129,
+          "output_tokens": 512,
+          "trials": 2,
+          "retrieval_ok": true,
+          "ttft_s": 171.6
+        },
+        {
+          "target_tokens": 327680,
+          "input_tokens": 327605,
+          "decode_tps": 9.2,
+          "min_tps": 9.004458519591754,
+          "max_tps": 9.31652148143726,
+          "output_tokens": 512,
+          "trials": 2,
+          "retrieval_ok": true,
+          "ttft_s": 229.54
+        },
+        {
+          "target_tokens": 392090,
+          "input_tokens": 392021,
+          "decode_tps": 8.3,
+          "min_tps": 8.221798929892426,
+          "max_tps": 8.346782346238781,
+          "output_tokens": 512,
+          "trials": 2,
+          "retrieval_ok": true,
+          "ttft_s": 295.25
+        }
+      ],
+      "sampling": {
+        "mtp": 3,
+        "memory_fraction": 0.99,
+        "chunked_prefill": 512
+      },
+      "resources": {
+        "peak_memory_mib": {
+          "0": 23914.0,
+          "1": 23914.0,
+          "2": 23914.0,
+          "3": 23914.0
+        }
+      }
+    },
+    {
+      "id": "nemotron35-super-uncensored",
+      "name": "Nemotron 3.5 Super VL 120B Uncensored",
+      "short": "Nemotron Uncensored",
+      "quant": "AD-Q4_K_S",
+      "backend": "llama.cpp b11669",
+      "max_context": 1048576,
+      "gpus": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "parallel": 1,
+      "status": "partial",
+      "tps_20k": 60.2,
+      "quality_note": "Configured 1M with Q8 KV/MTP3/ubatch64 and CPU vision. Three uncached 20k trials passed (60.2 tok/s). User stopped the near-limit trial during prefill after 651269 tokens / 1907.95s; no near-1M decode/retrieval result. The configured limit is not a completed 1M validation. Historical 128k curve and raw trials retained.",
+      "sampling": {
+        "temperature": 0,
+        "thinking": false,
+        "cache_prompt": false,
+        "ignore_eos": true,
+        "mtp": 3,
+        "ubatch": 64,
+        "cache_k": "q8_0",
+        "cache_v": "q8_0",
+        "draft_cache_k": "q8_0",
+        "draft_cache_v": "q8_0",
+        "vision_cpu": true,
+        "tensor_split": "0.238889,0.266667,0.266667,0.227778",
+        "overrides": [
+          "^blk\\.88\\.ffn_down_exps\\.weight$=CUDA0"
+        ],
+        "trials_note": "Three completed at 20k; near-limit trial stopped during prefill at user request"
+      },
+      "points": [
+        {
+          "target_tokens": 20480,
+          "input_tokens": 20400,
+          "decode_tps": 60.2,
+          "min_tps": 59.93856473060019,
+          "max_tps": 61.55320539822816,
+          "output_tokens": 512,
+          "prompt_tps": 504.3,
+          "prefill_s": 40.45,
+          "retrieval_ok": true,
+          "trials": 3,
+          "record_files": [
+            "baseline-20480-1.json",
+            "baseline-20480-2.json",
+            "baseline-20480-3.json"
+          ]
+        }
+      ],
+      "raw_dir": "nemotron35-uncensored-context-20261018"
+    },
+    {
+      "id": "glm53-flash-maya-m",
+      "name": "GLM 5.3 Flash 321B",
+      "short": "GLM 5.3 Flash",
+      "quant": "Maya-M IQ2_S",
+      "backend": "Maya",
+      "max_context": 262144,
+      "gpus": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "parallel": 1,
+      "status": "complete",
+      "points": [
+        {
+          "target_tokens": 20480,
+          "input_tokens": 20383,
+          "output_tokens": 512,
+          "decode_tps": 59.4,
+          "prompt_tps": 1303.6,
+          "min_tps": 52.6,
+          "max_tps": 60.0,
+          "retrieval_ok": true,
+          "trials": 3,
+          "prefill_s": 15.6
+        },
+        {
+          "target_tokens": 65536,
+          "input_tokens": 65452,
+          "output_tokens": 512,
+          "decode_tps": 55.4,
+          "prompt_tps": 1544.4,
+          "min_tps": 51.5,
+          "max_tps": 59.3,
+          "retrieval_ok": true,
+          "trials": 2,
+          "prefill_s": 42.4
+        },
+        {
+          "target_tokens": 131072,
+          "input_tokens": 130986,
+          "output_tokens": 512,
+          "decode_tps": 56.6,
+          "prompt_tps": 1893.6,
+          "min_tps": 56.4,
+          "max_tps": 56.9,
+          "retrieval_ok": true,
+          "trials": 2,
+          "prefill_s": 69.2
+        },
+        {
+          "target_tokens": 196608,
+          "input_tokens": 196520,
+          "output_tokens": 512,
+          "decode_tps": 53.3,
+          "prompt_tps": 2118.9,
+          "min_tps": 51.5,
+          "max_tps": 55.1,
+          "retrieval_ok": true,
+          "trials": 2,
+          "prefill_s": 92.7
+        },
+        {
+          "target_tokens": 245760,
+          "input_tokens": 245655,
+          "output_tokens": 512,
+          "decode_tps": 50.4,
+          "prompt_tps": 2217.9,
+          "min_tps": 48.5,
+          "max_tps": 52.3,
+          "retrieval_ok": true,
+          "trials": 2,
+          "prefill_s": 110.8
+        }
+      ],
+      "tps_20k": 59.4,
+      "resources": {
+        "gpu": "index, memory.used [MiB], memory.free [MiB], power.limit [W]\n0, 23558 MiB, 567 MiB, 290.00 W\n1, 23546 MiB, 579 MiB, 290.00 W\n2, 23546 MiB, 579 MiB, 290.00 W\n3, 23534 MiB, 591 MiB, 290.00 W\n",
+        "ram": "               total        used        free      shared  buff/cache   available\nMem:     135017451520 56429400064 38644686848 11427786752 52421902336 78588051456\nSwap:     8589930496    50384896  8539545600\n"
+      }
+    },
+    {
+      "id": "glm53-flash-maya-m-derisked",
+      "name": "GLM 5.3 Flash 321B Derisked",
+      "short": "GLM Derisked",
+      "quant": "Maya-M IQ2_S",
+      "backend": "Maya",
+      "max_context": 262144,
+      "gpus": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "parallel": 1,
+      "status": "partial",
+      "points": [
+        {
+          "target_tokens": 20480,
+          "input_tokens": 20383,
+          "output_tokens": 512,
+          "decode_tps": 56.4,
+          "prompt_tps": 1314.1,
+          "min_tps": 47.7,
+          "max_tps": 57.0,
+          "retrieval_ok": true,
+          "trials": 3,
+          "prefill_s": 15.5
+        },
+        {
+          "target_tokens": 245760,
+          "input_tokens": 245655,
+          "output_tokens": 512,
+          "decode_tps": 47.8,
+          "prompt_tps": 2223.1,
+          "min_tps": 45.4,
+          "max_tps": 50.3,
+          "retrieval_ok": true,
+          "trials": 2,
+          "prefill_s": 110.5
+        }
+      ],
+      "tps_20k": 56.4,
+      "resources": {
+        "gpu": "index, memory.used [MiB], memory.free [MiB], power.limit [W]\n0, 23558 MiB, 567 MiB, 290.00 W\n1, 23546 MiB, 579 MiB, 290.00 W\n2, 23546 MiB, 579 MiB, 290.00 W\n3, 23534 MiB, 591 MiB, 290.00 W\n",
+        "ram": "               total        used        free      shared  buff/cache   available\nMem:     135017451520 56546344960 51400228864 11485790208 39607386112 78471106560\nSwap:     8589930496    50360320  8539570176\n"
+      },
+      "raw_dir": "maya-derisked-20261022",
+      "quality_note": "Experimental directional weight edit. These points were measured with 256k allocation. The current profile uses 1M; no new 1M benchmark was run."
+    }
+  ],
+  "updated_at": "2026-10-22T11:39:31.998812+00:00",
+  "archive": "context-20261012/all-six/context.json"
+}
