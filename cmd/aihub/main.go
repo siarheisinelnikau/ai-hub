@@ -8,6 +8,7 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -17,6 +18,7 @@ import (
 
 	"aihub/internal/actions"
 	"aihub/internal/auth"
+	"aihub/internal/buildinfo"
 	"aihub/internal/config"
 	"aihub/internal/metrics"
 	"aihub/internal/models"
@@ -26,6 +28,10 @@ import (
 )
 
 func main() {
+	if len(os.Args) == 2 && (os.Args[1] == "--version" || os.Args[1] == "-version") {
+		fmt.Println(buildinfo.String("aihub"))
+		return
+	}
 	log.SetPrefix("aihub: ")
 	log.SetOutput(os.Stderr)
 

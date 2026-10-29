@@ -16,6 +16,24 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class InstallationTest(unittest.TestCase):
+    def test_version_needs_no_configuration_and_creates_no_state(self):
+        with tempfile.TemporaryDirectory(prefix="ai-hub-version-") as directory:
+            root = Path(directory)
+            env = {key: value for key, value in os.environ.items() if not key.startswith("AIHUB")}
+            # Version inspection must work even if configuration cannot be read.
+            env.update(AIHUB=str(root), AIHUB_ENV_FILE=str(root / "missing.env"))
+            versions = []
+            for command, label in [("aihub", "aihub"), ("mcp", "ai-hub-mcp")]:
+                binary = root / (command + (".exe" if os.name == "nt" else ""))
+                subprocess.run(["go", "build", "-o", str(binary), "./cmd/" + command], cwd=ROOT, check=True, capture_output=True)
+                for flag in ["--version", "-version"]:
+                    result = subprocess.run([str(binary), flag], cwd=root, env=env, check=True, capture_output=True, text=True, timeout=10)
+                    self.assertRegex(result.stdout, rf"^{label} \d+\.\d+\.\d+ \(revision [a-z0-9]+, modified=(true|false)\)\n$")
+                    self.assertEqual(result.stderr, "")
+                    versions.append(result.stdout.split()[1])
+            self.assertEqual(len(set(versions)), 1)
+            self.assertEqual(len(list(root.iterdir())), 2)
+
     def test_empty_first_start_authenticates_and_hides_credentials(self):
         with tempfile.TemporaryDirectory(prefix="ai-hub-install-") as directory:
             root = Path(directory)

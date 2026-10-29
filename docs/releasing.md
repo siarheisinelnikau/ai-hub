@@ -1,5 +1,26 @@
 # Public release checklist
 
+## Versioned releases from the public repository
+
+For subsequent releases, keep the existing public history. Update the shared
+version in `internal/buildinfo/version.go`, the changelog and README release link.
+Refresh `SOURCE_MANIFEST.json` using the canonical LF bytes of every published
+file, excluding the manifest itself. Run `python scripts/check.py`, review the
+diff and scan the history before committing. Require successful Linux/Windows CI.
+
+Create an annotated `v<version>` tag on the reviewed commit. Build both commands
+from that clean checkout with `CGO_ENABLED=0`, `GOOS=linux`, `GOARCH=amd64` and
+`go build -trimpath -buildvcs=true`. Do not put build outputs inside the checkout
+before the second build: untracked files can mark its revision as modified.
+Verify `--version` on both binaries and distribute them with SHA-256 checksums
+and release notes. Keep deployment credentials and local configuration private.
+
+After deployment, both health endpoints must identify the tagged commit with
+`modified: false`. Preserve a rollback snapshot and verify authenticated model
+status, streaming and MCP access as described in [operations](operations.md).
+
+## Creating the initial public snapshot
+
 Use a curated snapshot when development history includes private operational
 records. `scripts/export_public.py` copies reviewed manifest paths into a new
 directory, excludes `.git` and secrets, and refuses to overwrite a destination.

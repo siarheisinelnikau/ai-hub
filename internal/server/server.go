@@ -17,6 +17,7 @@ import (
 
 	"aihub/internal/actions"
 	"aihub/internal/auth"
+	"aihub/internal/buildinfo"
 	"aihub/internal/cloud"
 	"aihub/internal/config"
 	"aihub/internal/metrics"
@@ -142,7 +143,11 @@ func (s *Server) Handler() http.Handler {
 		_, _ = fmt.Fprintf(w, "window.AIHUB_CONFIG=%s;\n", b)
 	})
 	mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, r *http.Request) {
-		writeJSON(w, http.StatusOK, map[string]interface{}{"ok": true})
+		w.Header().Set("Cache-Control", "no-store")
+		writeJSON(w, http.StatusOK, struct {
+			OK bool `json:"ok"`
+			buildinfo.Info
+		}{OK: true, Info: buildinfo.Current()})
 	})
 	// Auth
 	mux.HandleFunc("POST /api/login", s.handleLogin)

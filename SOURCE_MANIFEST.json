@@ -22,7 +22,7 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "sha256": "359eccdfea83c4e944c1eb21fbee521da4d5a7fdadba392043eb0305c86542e6"
+      "sha256": "dcd41de0ee6c4a66a270d8ba0505748664f340eb52d357c47061a7264ae4377a"
     },
     {
       "path": ".gitignore",
@@ -34,7 +34,7 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "65d0aca2d100269b63bf2815bf840bd8e921e886a32e35848e42c6dff81e660c"
+      "sha256": "df0a38b00d6d537153599f85591702df4ee884ea1f206f35c8b11012f1db3569"
     },
     {
       "path": "CONTRIBUTING.md",
@@ -50,7 +50,7 @@
     },
     {
       "path": "README.md",
-      "sha256": "c4e9312fda5c8ba1233f009c33bd17054c889546620fa667026acf00d1e5b9c8"
+      "sha256": "d20c7c83438fcb445eed4b2afbc974c4e072fbaaec459b1f1e545ad127953d10"
     },
     {
       "path": "SECURITY.md",
@@ -126,11 +126,11 @@
     },
     {
       "path": "cmd/aihub/main.go",
-      "sha256": "91a2c628f23a13e1dec2dc53948d94cd760a08de380c200721cf84b01e917b9e"
+      "sha256": "d8eba378fc528773fffd4c865b2196f918dc885fad9b4c9089a2ec9192c18e1d"
     },
     {
       "path": "cmd/mcp/main.go",
-      "sha256": "65cb40d307298cb0cc721a7b64257b1630b091e141ca20fb60ea3021ee6a52d2"
+      "sha256": "d2cc4d8a2be8bce75dc3e23b81b28891b408c7bdbb5f55b7d60379bed138ceea"
     },
     {
       "path": "cmd/mcp/main_test.go",
@@ -194,11 +194,11 @@
     },
     {
       "path": "docs/operations.md",
-      "sha256": "09395489bbefe4e1b76081e741242c32dfafc3959d9697b30206eba73b59c748"
+      "sha256": "18b6c0405799248314f816b5e4401b8ae46a2ae4857716a60b40413c3201bf03"
     },
     {
       "path": "docs/releasing.md",
-      "sha256": "ef98dd3856b8f7b381b70cbb55a01443f88eec2e0234cf1598ff70384df53e41"
+      "sha256": "267d4eb0c53c2104f9b7f205adfc9ec44dfffbecbde8c05ba7ac30cc31c37ae4"
     },
     {
       "path": "examples/ai-local-llm.service",
@@ -261,6 +261,10 @@
       "sha256": "35d7e7aea1fdf02358fb88efb73e13d294c4e34a3d941c98e364ba1b5c7cd97f"
     },
     {
+      "path": "internal/buildinfo/version.go",
+      "sha256": "4ca2d47edd17b0080597a778c3fd6d1fa40fd4fd7c8df5795fdf882f6ce91561"
+    },
+    {
       "path": "internal/cloud/cloud.go",
       "sha256": "839ba871de96f9aa0060d8d82c1661ea302c47da1d3d4fa689e27190d8473cae"
     },
@@ -285,12 +289,16 @@
       "sha256": "0716aaf253edf55e6059ca08083fb6085d8d88b765c8ed4ccf4ed8e07bf0b983"
     },
     {
+      "path": "internal/mcp/health_test.go",
+      "sha256": "8aa7437e514369b610f55a2c750cfd0017020622bab9387f02bc23117e75659f"
+    },
+    {
       "path": "internal/mcp/mcp.go",
-      "sha256": "9b23ba283bb033a5fe29553094504cdfd46a33721c01dc6fe4c717797758651b"
+      "sha256": "c7b5ef72e414e7383585b8ea7f4d255874515b4b763c76f305bafa5d7d4c4ab1"
     },
     {
       "path": "internal/mcp/mcp_test.go",
-      "sha256": "904af5992c40b9fe8fa023d4155d1d82c8ca3c1610fd6dbbec05bd2ed3880012"
+      "sha256": "e3b94df363b9ad3b15ca786f847d7e823f2873205c9ccacbeb9f06a6088eb347"
     },
     {
       "path": "internal/mcp/tools.go",
@@ -462,11 +470,11 @@
     },
     {
       "path": "internal/server/server.go",
-      "sha256": "215d7376a2bc8d34d37f5c8602b52333c782ac5b0183ba6a926f0ee3c306d19d"
+      "sha256": "aeb1282160a22850bbe384a05a302a24c645e339bff73d779e3bef215cad7cf6"
     },
     {
       "path": "internal/server/server_test.go",
-      "sha256": "1f2e25ff362d179782ae9fb69852f22ab2eee9f417b0c1194a0cec42ce8c6a19"
+      "sha256": "b1be974dc78a2787032f683aec7eb57e024912ca8a10b801d30021832fbf491a"
     },
     {
       "path": "internal/server/static.go",
@@ -890,7 +898,7 @@
     },
     {
       "path": "tests/test_installation.py",
-      "sha256": "7491c22a97bb45cc3e3c612cc930e058a54998e1ff9b6e11c5d7bcb257bb4cfa"
+      "sha256": "aa97607d55ed2e49653499741d713f44212ec0b27d84165dd65f6d151d1573a3"
     },
     {
       "path": "threed/Dockerfile",
