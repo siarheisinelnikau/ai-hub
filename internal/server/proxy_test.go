@@ -527,13 +527,24 @@ func TestUniversalChat_LoadingNoFallback_503(t *testing.T) {
 
 func TestWaitForModelReady_ContainerStopped_EarlyExit(t *testing.T) {
 	s, _ := testServer(t)
+	// Return an explicit loading response instead of depending on OS-specific
+	// connection-refusal timing. No Docker or systemd lookup belongs in this test.
+	up := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, `{"loaded":false}`)
+	}))
+	defer up.Close()
+	port, err := strconv.Atoi(mustURLPort(t, up.URL))
+	if err != nil {
+		t.Fatal(err)
+	}
+	s.startedAt = func(string) (time.Time, bool) { return time.Now(), true }
 	s.containerRunning = func(string) bool { return false } // crashed container
 	s.healthPoll = 50 * time.Millisecond
 	s.loadWait = 10 * time.Second
 
 	start := time.Now()
-	if ok := s.waitForModelReady(context.Background(), "m-a", closedPort(t)); ok {
-		t.Fatal("waitForModelReady = true, want false (port closed, container stopped)")
+	if ok := s.waitForModelReady(context.Background(), "m-a", port); ok {
+		t.Fatal("waitForModelReady = true, want false (unhealthy, container stopped)")
 	}
 	if elapsed := time.Since(start); elapsed > 2*time.Second {
 		t.Fatalf("took %v — must bail early when the container stopped", elapsed)
