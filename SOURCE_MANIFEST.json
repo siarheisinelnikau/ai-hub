@@ -286,11 +286,11 @@
     },
     {
       "path": "internal/mcp/mcp_test.go",
-      "sha256": "898da0010a5ebc9032376ac00cb7fcb5877d644401cc8abcbbf73423df6e826c"
+      "sha256": "904af5992c40b9fe8fa023d4155d1d82c8ca3c1610fd6dbbec05bd2ed3880012"
     },
     {
       "path": "internal/mcp/tools.go",
-      "sha256": "090138af70898458cb81a2dca7070a41908974541a2f8691af780b46e991797e"
+      "sha256": "d93f26e16cb020e822946d2e6b2f5d38068f69da937e80080761728c995522b6"
     },
     {
       "path": "internal/metrics/metrics.go",
@@ -434,7 +434,7 @@
     },
     {
       "path": "internal/server/proxy_test.go",
-      "sha256": "33ae36f7fe9935264839ea32f0bce7661a6334265d680f23cc6ed02dd99b406f"
+      "sha256": "2bffc6ed72ad80b3ed68c8b5af7198c662a7309cf20f98fc7aaf60209f9e48cb"
     },
     {
       "path": "internal/server/ratelimit.go",

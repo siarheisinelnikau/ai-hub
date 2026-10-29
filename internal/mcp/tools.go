@@ -52,11 +52,11 @@ func NewMediaConfig(host string) MediaConfig {
 	}
 	host = strings.TrimRight(host, "/")
 	return MediaConfig{
-		ComfyUI:      host + ":8188",
-		Voice:        host + ":8010",
-		Music:        host + ":8017", // ACE-Step REST API (gradio UI on 8016 is optional)
-		Threed:       host + ":8020",
-		OutDir:       os.TempDir(),
+		ComfyUI: host + ":8188",
+		Voice:   host + ":8010",
+		Music:   host + ":8017", // ACE-Step REST API (gradio UI on 8016 is optional)
+		Threed:  host + ":8020",
+		OutDir:  os.TempDir(),
 		// E-01 default read area: artifacts + media host dirs + user files.
 		// Deliberately NOT /srv/ai-hub (tokens), /root, /etc.
 		ReadRoots:    []string{os.TempDir(), "/srv/ai", "/home/user"},
@@ -163,8 +163,9 @@ func (m *MediaAPI) SafeRead(p string) ([]byte, string, error) {
 		return nil, "", err
 	}
 	// Resolve symlinks so a link inside an allowed root can't point outside it.
-	if rp, e := filepath.EvalSymlinks(ap); e == nil {
-		ap = rp
+	ap, err = filepath.EvalSymlinks(ap)
+	if err != nil {
+		return nil, "", err
 	}
 	roots := m.Cfg.ReadRoots
 	if len(roots) == 0 {
@@ -175,8 +176,20 @@ func (m *MediaAPI) SafeRead(p string) ([]byte, string, error) {
 		if err2 != nil {
 			continue
 		}
-		if ap == rr || strings.HasPrefix(ap, rr+string(os.PathSeparator)) {
-			b, err3 := os.ReadFile(ap)
+		// Canonicalize both sides, including Windows short directory names.
+		rr, err2 = filepath.EvalSymlinks(rr)
+		if err2 != nil {
+			continue
+		}
+		rel, err2 := filepath.Rel(rr, ap)
+		if err2 == nil && rel != ".." && !strings.HasPrefix(rel, ".."+string(os.PathSeparator)) && !filepath.IsAbs(rel) {
+			root, err3 := os.OpenRoot(rr)
+			if err3 != nil {
+				return nil, "", err3
+			}
+			defer root.Close()
+			// Keep the read confined if a symlink changes after validation.
+			b, err3 := root.ReadFile(rel)
 			if err3 != nil {
 				return nil, "", err3
 			}
@@ -369,8 +382,8 @@ func (m *MediaAPI) comfySubmit(ctx context.Context, wf map[string]interface{}) (
 		return "", fmt.Errorf("comfyui unreachable at %s: %w", m.Cfg.ComfyUI, err)
 	}
 	var res struct {
-		PromptID string `json:"prompt_id"`
-		Error    string `json:"error"`
+		PromptID string                 `json:"prompt_id"`
+		Error    string                 `json:"error"`
 		NodeErrs map[string]interface{} `json:"node_errors"`
 	}
 	if jerr := json.Unmarshal(data, &res); jerr != nil {
@@ -481,7 +494,7 @@ func (m *MediaAPI) image(ctx context.Context, args map[string]interface{}) (*Too
 	_ = strArg(args, "negative", "") // accepted for API compat; FLUX.2 is guidance-distilled and has no negative path
 	width := intArg(args, "width", 1024) / 8 * 8
 	height := intArg(args, "height", 1024) / 8 * 8
-	steps := intArg(args, "steps", 8)   // Flux2Turbo distilled LoRA: 8 steps is the recipe
+	steps := intArg(args, "steps", 8)      // Flux2Turbo distilled LoRA: 8 steps is the recipe
 	guidance := floatArg(args, "cfg", 3.5) // FLUX.2 guidance (3.5 standard, ~4 max)
 	seed := intArg(args, "seed", -1)
 	if seed < 0 {
@@ -861,7 +874,7 @@ func (m *MediaAPI) music(ctx context.Context, args map[string]interface{}) (*Too
 		return errResult("generate_music: music service unreachable at %s: %v", m.Cfg.Music, err), nil
 	}
 	var env struct {
-		Data  struct {
+		Data struct {
 			TaskID string `json:"task_id"`
 		} `json:"data"`
 		Error string `json:"error"`
@@ -1033,12 +1046,12 @@ func (m *MediaAPI) to3d(ctx context.Context, args map[string]interface{}) (*Tool
 	seed := intArg(args, "seed", 1234)
 
 	fileData := map[string]interface{}{
-		"path":       nil,
-		"url":        "data:image/png;base64," + base64.StdEncoding.EncodeToString(img),
-		"name":       name,
-		"size":       len(img),
-		"mimetype":   "image/png",
-		"orig_name":  name,
+		"path":      nil,
+		"url":       "data:image/png;base64," + base64.StdEncoding.EncodeToString(img),
+		"name":      name,
+		"size":      len(img),
+		"mimetype":  "image/png",
+		"orig_name": name,
 	}
 	glsn := beforeFiles(ctx, m.Cfg.ThreedOutDir)
 	// 13 args: [0] is a hidden gradio State (caption slot, pass nil),
