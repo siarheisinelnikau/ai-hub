@@ -2,6 +2,9 @@
 
 **Your models. Your hardware. One control panel.**
 
+Current release: **[v0.1.0](https://github.com/siarheisinelnikau/ai-hub/releases/tag/v0.1.0)** ·
+[Changelog](CHANGELOG.md)
+
 A self-hosted control panel for a single AI server. Start and stop inference
 services, inspect GPU usage, manage model downloads, and connect clients through
 one OpenAI-compatible endpoint. A Go backend serves a vanilla JavaScript UI;

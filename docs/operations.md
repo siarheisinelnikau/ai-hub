@@ -70,6 +70,12 @@ TLS on the panel does not protect an independently exposed inference port.
 `authorization.credentials_file` with a private token file. MCP `/health`
 reports transport liveness. Missing optional sensors do not prove hardware health.
 
+Inspect the installed release with `./aihub --version` and `./mcp --version`.
+Both health endpoints also return `version`, `revision`, and `modified` fields.
+Release builds from a clean Git checkout report the full commit and
+`modified: false`; builds from source archives report `revision: "unknown"`.
+These fields identify the deployed code, not the health of model engines.
+
 Before updating, back up executables, static assets, units, registry/catalog,
 and private configuration to an administrator-only location. Record engine
 versions/image digests and run the checks. Preview the target with
