@@ -1,4 +1,4 @@
-const {serviceURL, hubURL} = require('./scripts/env.cjs');
+const {serviceURL, hubURL, hubToken} = require('./scripts/env.cjs');
 // Generates ~/.config/opencode/opencode.jsonc from the ai-hub model matrix.
 // One provider per hub LLM (each has its own port), only its largest context.
 const fs=require('fs');
@@ -84,7 +84,7 @@ for(const[key,port,apiId,family,namePrefix,quant,variants,hasV]of P){
 provider.universal={
   name:"AI HUB (Universal)",
   npm:"@ai-sdk/openai-compatible",
-  options:{apiKey:"none",baseURL:hubURL(),timeout:false,headerTimeout:7200000,chunkTimeout:7200000},
+  options:{apiKey:hubToken(),baseURL:hubURL(),timeout:false,headerTimeout:7200000,chunkTimeout:7200000},
   models:{universal:{id:"universal",name:"AI Hub Universal 1M",family:"ai-hub",reasoning:false,tool_call:true,temperature:true,limit:{context:1048576,output:32768}}},
 };
 const doc={"$schema":"https://opencode.ai/config.json",model:DEFAULT_MODEL,provider};
