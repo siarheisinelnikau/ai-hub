@@ -369,26 +369,36 @@ async function showLogs(mid) {
 
 // ── Show API info ────────────────────────────────────────────────
 function showApi(id, port, backend) {
-  const base = `${serviceURL(port, '/v1')}`;
-  const model = backend === 'Maya' ? (id === 'glm53-flash-maya-m-derisked' ? 'glm-5.3-flash-derisked' : 'glm-5.3-flash') : id.includes('gemma') ? (id.includes('uncensored') ? 'gemma-4-31b-uncensored' : 'gemma-4-31b') : 'qwen3.8-27b';
-  const authArg = backend === 'Maya' ? ' -H "Authorization: Bearer $MAYA_API_KEY"' : '';
-  const docsUrl = `${serviceURL(port, '/docs')}`;
+  const base = hubURL('/v1/model/' + encodeURIComponent(id));
+  const model = ({
+    'glm53-flash-maya-m':'glm-5.3-flash',
+    'glm53-flash-maya-m-derisked':'glm-5.3-flash-derisked',
+    'qwen38-flash-next-strata':'qwen3.8-flash-next-unsloth-ud-iq4_xs',
+    'qwen38-flash-next-uncensored-strata':'qwen3.8-flash-next-uncensored-ud-iq4_xs',
+    'qwen38-flash-next-iq3-strata':'qwen3.8-flash-next-iq3_xxs',
+    'qwen-q4k-llama':'qwen3.8-27b', 'qwen-q6k-llama':'qwen3.8-27b',
+    'qwen35-122b-q4k':'qwen3.5-122b', 'qwen38-35b-q8':'qwen3.8-35b',
+    'gemma4-26b-q4k-mtp':'gemma-4-26b', 'gpt-oss-120b':'gpt-oss-120b',
+    'nemotron35-super-q4k':'nemotron-3.5-super-vl',
+    'nemotron35-super-nvfp4':'nemotron-3.5-super-vl',
+    'nemotron35-super-uncensored':'nemotron-3.5-super-vl',
+  })[id] || id;
   const body = `
-<div style="text-align:left;font-family:JetBrains Mono,monospace;font-size:12px;line-height:1.6">
+<div style="text-align:left;font-family:JetBrains Mono,monospace;font-size:12px;line-height:1.6;overflow-wrap:anywhere">
 <div style="margin-bottom:12px"><b style="color:var(--fg)">Base URL:</b> <code style="background:var(--muted);padding:2px 6px;border-radius:6px">${base}</code> <span style="color:var(--fg3)">(${backend})</span></div>
 <div style="margin-bottom:12px"><b>Model:</b> <code style="background:var(--muted);padding:2px 6px;border-radius:6px">${model}</code></div>
-<div id="api-curl" style="background:var(--muted);border:1px solid var(--border);border-radius:10px;padding:12px;margin:10px 0;overflow-x:auto;white-space:pre">curl -X POST ${base}/chat/completions${authArg} \\
+<div style="margin-bottom:12px"><b>API key:</b> Your AI-HUB access token (the same token you use to sign in).</div>
+<div id="api-curl" style="background:var(--muted);border:1px solid var(--border);border-radius:10px;padding:12px;margin:10px 0;overflow-x:auto;white-space:pre">curl -X POST ${base}/chat/completions \\
+   -H "Authorization: Bearer $AIHUB_TOKEN" \\
    -H "Content-Type: application/json" \\
    -d '{\n    "model": "${model}",\n    "messages": [{"role":"user","content":"Hello"}]\n  }'</div>
  <button class="btn btn-ghost" style="padding:5px 12px;font-size:11.5px" onclick="copyCurl()" title="Copy the curl command to the clipboard">Copy</button>
 <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
-  <a href="${base}/models" target="_blank" style="color:var(--fg);background:var(--muted);border:1px solid var(--border);padding:6px 12px;border-radius:8px;text-decoration:none;font-size:12px">GET /v1/models</a>
-  <a href="${docsUrl}" target="_blank" style="color:var(--fg);background:var(--muted);border:1px solid var(--border);padding:6px 12px;border-radius:8px;text-decoration:none;font-size:12px">/docs (vLLM)</a>
-  <a href="${serviceURL(port, '/health')}" target="_blank" style="color:var(--fg);background:var(--muted);border:1px solid var(--border);padding:6px 12px;border-radius:8px;text-decoration:none;font-size:12px">/health</a>
+  <a href="${base}/models" target="_blank" rel="noopener" style="color:var(--fg);background:var(--muted);border:1px solid var(--border);padding:6px 12px;border-radius:8px;text-decoration:none;font-size:12px">List models</a>
 </div>
-<div style="margin-top:10px;color:var(--fg3);font-size:11px">OpenAI-compatible. Use any OpenAI SDK with the baseURL above. Chat UI — the 💬 Chat button.${backend === 'Maya' ? ' Maya requires a private API key in MAYA_API_KEY; Open WebUI, OpenCode and pi are already configured.' : ''}</div>
+<div style="margin-top:10px;color:var(--fg3);font-size:12px">Start this model in the panel, then use the Base URL and token above in your OpenAI-compatible client. Strata and Maya keys are managed by AI-HUB. To follow model switches automatically, use <code>${hubURL('/v1')}</code> with model <code>universal</code>.</div>
 </div>`;
-  showModal({ title: `API — ${id} :${port}`, body: body, buttons: [{ label: 'Close', type: 'ghost', value: true }] });
+  showModal({ title: 'API connection', body: body, buttons: [{ label: 'Close', type: 'ghost', value: true }] });
 }
 
 function copyCurl() {

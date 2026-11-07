@@ -54,6 +54,90 @@ test('client generators prefer the remote hub key and reject missing credentials
   assert.equal(load({ AIHUB_TOKEN: 'local-test-token' }, 'remote-test-token\n').hubToken(), 'remote-test-token');
   assert.equal(load({ AIHUB_CLIENT_TOKEN: 'explicit-test-token' }, 'remote-test-token').hubToken(), 'explicit-test-token');
   assert.equal(load({ AIHUB_TOKEN: 'local-test-token' }).hubToken(), 'local-test-token');
-  assert.throws(() => load({}).hubToken(), /authenticated Universal API/);
-  assert.throws(() => load({ AIHUB_CLIENT_TOKEN: 'none' }).hubToken(), /authenticated Universal API/);
+  assert.throws(() => load({}).hubToken(), /authenticated AI-HUB API/);
+  assert.throws(() => load({ AIHUB_CLIENT_TOKEN: 'none' }).hubToken(), /authenticated AI-HUB API/);
+});
+
+test('API instructions use the hub token for Maya and Qwen profiles', () => {
+  let modal;
+  const context = vm.createContext({
+    hubURL: suffix => 'https://hub.example' + suffix,
+    showModal: value => { modal = value; },
+  });
+  vm.runInContext(fs.readFileSync('static/js/page.js', 'utf8'), context);
+  for (const [id, backend, model] of [
+    ['glm53-flash-maya-m-derisked', 'Maya', 'glm-5.3-flash-derisked'],
+    ['qwen38-flash-next-uncensored-strata', 'Strata', 'qwen3.8-flash-next-uncensored-ud-iq4_xs'],
+  ]) {
+    context.showApi(id, 18038, backend);
+    assert.ok(modal.body.includes('https://hub.example/v1/model/' + id + '/chat/completions'));
+    assert.ok(modal.body.includes('Bearer $AIHUB_TOKEN'));
+    assert.ok(modal.body.includes(`"model": "${model}"`));
+    assert.ok(!modal.body.includes('MAYA_API_KEY'));
+    assert.ok(!modal.body.includes(':18038'));
+  }
+});
+
+test('fresh harness configurations need only the hub key', () => {
+  const os = require('node:os');
+  const path = require('node:path');
+  const {execFileSync} = require('node:child_process');
+  const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'aihub-client-generation-'));
+  try {
+    const env = {...process.env, AIHUB_ENV_FILE:'-', AIHUB_CLIENT_TOKEN:'test-hub-token',
+      AIHUB_PUBLIC_URL:'https://hub.example', AIHUB_CLIENT_TOKEN_FILE:path.join(temp, 'missing-key'),
+      AIHUB_OPENCODE_OUTPUT:path.join(temp, 'opencode.jsonc'), AIHUB_PI_OUTPUT:path.join(temp, 'models.json')};
+    for (const file of ['gen-opencode.js', 'strata/sync-pi.js']) execFileSync(process.execPath, [file], {env, stdio:'pipe'});
+    const open = JSON.parse(fs.readFileSync(env.AIHUB_OPENCODE_OUTPUT, 'utf8'));
+    const pi = JSON.parse(fs.readFileSync(env.AIHUB_PI_OUTPUT, 'utf8'));
+    for (const provider of Object.values(open.provider)) {
+      assert.equal(provider.options.apiKey, 'test-hub-token');
+      assert.ok(provider.options.baseURL.startsWith('https://hub.example/v1'));
+    }
+    for (const provider of Object.values(pi.providers)) {
+      assert.equal(provider.apiKey, 'test-hub-token');
+      assert.ok(provider.baseUrl.startsWith('https://hub.example/v1'));
+    }
+    assert.equal(pi.providers['ai-hub-glm53-maya-m-derisked'].models[0].id, 'glm-5.3-flash-derisked');
+    assert.equal(pi.providers['ai-hub-glm53-maya-m-derisked'].models[0].thinkingLevelMap.max, 'max');
+    assert.equal(open.provider['qwen-q6k'].options.baseURL, 'https://hub.example/v1/model/qwen-q6k-llama');
+  } finally { fs.rmSync(temp, {recursive:true, force:true}); }
+});
+
+test('migration preserves models, thinking, defaults and unrelated providers with private backups', () => {
+  const os = require('node:os');
+  const path = require('node:path');
+  const {execFileSync} = require('node:child_process');
+  const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'aihub-client-migration-'));
+  try {
+    const open = {model:'qwen-q6k/existing-alias', provider:{
+      'qwen-q6k':{options:{baseURL:'http://old-host:18026/v1', apiKey:'none', chunkTimeout:123}, models:{'existing-alias':{id:'existing-alias', variants:{max:{reasoningEffort:'max'}}}}},
+      external:{options:{baseURL:'https://external.example:18038/v1', apiKey:'keep-private'}, models:{}},
+    }};
+    const pi = {providers:{
+      'ai-hub-glm53-maya-m-derisked':{baseUrl:'http://old-host:18038/v1', apiKey:'old-upstream-key', models:[{id:'glm-5.3-flash-derisked', thinkingLevelMap:{max:'max'}}]},
+      external:{baseUrl:'https://external.example/v1', apiKey:'keep-private', models:[]},
+    }};
+    const env = {...process.env, AIHUB_ENV_FILE:'-', AIHUB_PUBLIC_URL:'https://hub.example',
+      AIHUB_CLIENT_TOKEN:'test-hub-token', AIHUB_OPENCODE_OUTPUT:path.join(temp,'opencode.jsonc'), AIHUB_PI_OUTPUT:path.join(temp,'models.json')};
+    fs.writeFileSync(env.AIHUB_OPENCODE_OUTPUT, JSON.stringify(open));
+    fs.writeFileSync(env.AIHUB_PI_OUTPUT, JSON.stringify(pi));
+    execFileSync(process.execPath, ['scripts/connect-clients.cjs'], {env, stdio:'pipe'});
+    const actualOpen = JSON.parse(fs.readFileSync(env.AIHUB_OPENCODE_OUTPUT,'utf8'));
+    const actualPi = JSON.parse(fs.readFileSync(env.AIHUB_PI_OUTPUT,'utf8'));
+    assert.equal(actualOpen.model, open.model);
+    assert.deepEqual(actualOpen.provider['qwen-q6k'].models, open.provider['qwen-q6k'].models);
+    assert.deepEqual(actualOpen.provider.external, open.provider.external);
+    assert.equal(actualOpen.provider['qwen-q6k'].options.chunkTimeout, 123);
+    assert.equal(actualOpen.provider['qwen-q6k'].options.apiKey, 'test-hub-token');
+    assert.equal(actualOpen.provider['qwen-q6k'].options.baseURL, 'https://hub.example/v1/model/qwen-q6k-llama');
+    assert.deepEqual(actualPi.providers.external, pi.providers.external);
+    assert.deepEqual(actualPi.providers['ai-hub-glm53-maya-m-derisked'].models, pi.providers['ai-hub-glm53-maya-m-derisked'].models);
+    assert.equal(actualPi.providers['ai-hub-glm53-maya-m-derisked'].apiKey, 'test-hub-token');
+    const files = fs.readdirSync(temp);
+    assert.equal(files.filter(file => file.includes('.bak.hub-auth-')).length, 2);
+    execFileSync(process.execPath, ['scripts/connect-clients.cjs'], {env, stdio:'pipe'});
+    assert.deepEqual(fs.readdirSync(temp), files);
+    if (process.platform !== 'win32') assert.equal(fs.statSync(env.AIHUB_PI_OUTPUT).mode & 0o777, 0o600);
+  } finally { fs.rmSync(temp, {recursive:true, force:true}); }
 });

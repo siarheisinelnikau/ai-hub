@@ -20,13 +20,14 @@ module.exports.hubURL = (suffix = '/v1') => {
   const base = process.env.AIHUB_PUBLIC_URL || `http://${authority}:${process.env.AIHUB_PORT || 8080}`;
   return new URL(suffix, base).href;
 };
+module.exports.modelURL = id => module.exports.hubURL(`/v1/model/${encodeURIComponent(id)}`);
 // Keep remote hub credentials separate from the local development panel token.
 module.exports.hubToken = () => {
   const file = process.env.AIHUB_CLIENT_TOKEN_FILE || path.join(os.homedir(), '.config', 'ai-hub', 'hub-api-key');
   const token = (process.env.AIHUB_CLIENT_TOKEN ||
     (fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : process.env.AIHUB_TOKEN) || '').trim();
   if (!token || /\s/.test(token) || ['none', 'no-key-required', 'dev-token-123'].includes(token)) {
-    throw new Error('Set AIHUB_CLIENT_TOKEN or a private AIHUB_CLIENT_TOKEN_FILE for the authenticated Universal API');
+    throw new Error('Set AIHUB_CLIENT_TOKEN or a private AIHUB_CLIENT_TOKEN_FILE for the authenticated AI-HUB API');
   }
   return token;
 };

@@ -363,6 +363,61 @@ func (s *Server) handleUniversalModels(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// modelProxyTarget pins a request to one registered LLM. A stopped or failed
+// profile must never silently send its prompts to another running model.
+func (s *Server) modelProxyTarget(w http.ResponseWriter, r *http.Request) *status.ModelStatusEntry {
+	id := r.PathValue("mid")
+	var modelExists bool
+	if s.d.Reg != nil {
+		m := s.d.Reg.Get(id)
+		modelExists = m != nil && m.Category == "LLM" && m.Port != 0
+	}
+	if !modelExists {
+		writeJSON(w, http.StatusNotFound, map[string]interface{}{
+			"error": map[string]string{"message": "unknown LLM profile: " + id, "type": "invalid_request_error"},
+		})
+		return nil
+	}
+	find := func(models []status.ModelStatusEntry) *status.ModelStatusEntry {
+		for _, m := range models {
+			if m.ID == id && m.Running && m.Category == "LLM" && m.Port != 0 {
+				return &m
+			}
+		}
+		return nil
+	}
+	target := find(s.runningLLMs())
+	if target == nil {
+		// A different running model in the cache must not hide a fresh start.
+		target = find(s.freshRunning())
+	}
+	if target == nil {
+		writeJSON(w, http.StatusServiceUnavailable, map[string]interface{}{
+			"error": map[string]string{"message": id + " is not running — start this model in the hub panel first", "type": "ai_hub_error"},
+		})
+		return nil
+	}
+	if !s.waitForModelReady(r.Context(), target.ID, target.Port) {
+		s.writeNotReady(w, target)
+		return nil
+	}
+	return target
+}
+
+// Per-profile base URLs keep existing model IDs and thinking/tool settings
+// compatible with clients while authenticating them with the hub token only.
+func (s *Server) handleModelProxyModels(w http.ResponseWriter, r *http.Request) {
+	if target := s.modelProxyTarget(w, r); target != nil {
+		s.forwardLLM(w, r, target, "/v1/models")
+	}
+}
+
+func (s *Server) handleModelProxyChat(w http.ResponseWriter, r *http.Request) {
+	if target := s.modelProxyTarget(w, r); target != nil {
+		s.forwardLLM(w, r, target, "/v1/chat/completions")
+	}
+}
+
 // handleUniversalChat forwards POST /v1/chat/completions to the last-started
 // running model. Streaming (SSE) bodies are passed through chunk-by-chunk
 // with flushes; the upstream client has NO overall timeout (long generations
@@ -408,8 +463,14 @@ func (s *Server) handleUniversalChat(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	upURL := fmt.Sprintf("http://127.0.0.1:%d/v1/chat/completions", target.Port)
-	upReq, err := http.NewRequestWithContext(r.Context(), http.MethodPost, upURL, r.Body)
+	s.forwardLLM(w, r, target, "/v1/chat/completions")
+}
+
+// forwardLLM serves both Universal and pinned profiles. Native credentials
+// belong to the server; clients never need to receive or supply those keys.
+func (s *Server) forwardLLM(w http.ResponseWriter, r *http.Request, target *status.ModelStatusEntry, path string) {
+	upURL := fmt.Sprintf("http://127.0.0.1:%d%s", target.Port, path)
+	upReq, err := http.NewRequestWithContext(r.Context(), r.Method, upURL, r.Body)
 	if err != nil {
 		writeJSON(w, http.StatusBadGateway, map[string]interface{}{
 			"error": map[string]interface{}{"message": err.Error(), "type": "upstream_error"},
@@ -423,9 +484,14 @@ func (s *Server) handleUniversalChat(w http.ResponseWriter, r *http.Request) {
 		upReq.Header.Set("Authorization", a)
 	}
 	if strings.EqualFold(target.Backend, "Strata") || strings.EqualFold(target.Backend, "Maya") {
-		if key := credentials.Key(target.ID); key != "" {
-			upReq.Header.Set("Authorization", "Bearer "+key)
+		key := credentials.Key(target.ID)
+		if key == "" {
+			writeJSON(w, http.StatusBadGateway, map[string]interface{}{
+				"error": map[string]string{"message": "private upstream key for " + target.ID + " is unavailable on ai-hub; check AIHUB_KEYS_DIR on the server", "type": "upstream_error"},
+			})
+			return
 		}
+		upReq.Header.Set("Authorization", "Bearer "+key)
 	}
 	if t := r.Header.Get("X-Title"); t != "" {
 		upReq.Header.Set("X-Title", t)
