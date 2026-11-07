@@ -25,6 +25,14 @@
       "sha256": "dcd41de0ee6c4a66a270d8ba0505748664f340eb52d357c47061a7264ae4377a"
     },
     {
+      "path": ".github/workflows/release-build.yml",
+      "sha256": "63af2070a3fa0935869f7c83c068400e591cf29ea4119b5f25bf74f830260263"
+    },
+    {
+      "path": ".github/workflows/release-from-github.yml",
+      "sha256": "75b1fa371d3e309b8cfa5cf8833f4ae6783c6124dd7b4cad47577be9dc283212"
+    },
+    {
       "path": ".gitignore",
       "sha256": "2db5564ec63943d2730b6a9e28e69d89feeabc0e36e5b4840723197c1e8fe3c8"
     },
@@ -665,6 +673,38 @@
       "sha256": "0d68ea394469e5ffa6f1f444a461bd66dcfd49f99baeff169a7401bc09c35181"
     },
     {
+      "path": "release/README.md",
+      "sha256": "5d173dbd995e9787214b1466072b43392935f591ae55ec3711defa746edfa080"
+    },
+    {
+      "path": "release/config.json",
+      "sha256": "f9ef6adde0689160383529cf2b6fd4bf8f7c55ce5f2b06fec20decd5dcaf19f0"
+    },
+    {
+      "path": "release/github.cjs",
+      "sha256": "b76cf7cd037a98ed7f57ebd2fc79c8297ed41ffe7535c334a62ae2caf6f8710e"
+    },
+    {
+      "path": "release/notes/0.1.0.md",
+      "sha256": "d79c5bdf00315ea8072b227b3948696b438771b5a494fabaf68436c15e610e49"
+    },
+    {
+      "path": "release/package_go.py",
+      "sha256": "beec15e1056f8ddced3a0f1d5c862b4c64881a37037d1af20a20513f942898e1"
+    },
+    {
+      "path": "release/prepare.py",
+      "sha256": "a83685a6fed23f0f3e65ef8b104f234d278bae1d3b674dc9260ebf19da5071fe"
+    },
+    {
+      "path": "release/test_github.cjs",
+      "sha256": "414205dddd12ecd8dc9f473d51550b2a7cd8957ed29b7591792025e01de1f146"
+    },
+    {
+      "path": "release/test_prepare.py",
+      "sha256": "701ca232c72fb50e0b7836b00868c3afd748b9bc6f5eef84766ba488d853b2ec"
+    },
+    {
       "path": "requirements-dev.txt",
       "sha256": "8fae1790ee677cd65441f5e1e7aea997e8c68c7c2300bb6fd56abf2cd4fc6b96"
     },
@@ -698,7 +738,7 @@
     },
     {
       "path": "scripts/public-manifest.json",
-      "sha256": "ec27dcd32db174aef8e820091908913b4f21683c161a4a670dbd9f35621e0ad0"
+      "sha256": "631f9e5f7ace07b80e7887819c2cd0e686b1999043337f017c1b223d7c3fbe78"
     },
     {
       "path": "scripts/start.py",
