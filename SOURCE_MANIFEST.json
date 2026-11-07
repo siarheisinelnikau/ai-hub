@@ -6,7 +6,7 @@
     },
     {
       "path": ".env.example",
-      "sha256": "1c32e053a19686637245a974913616998d21fbb4809dd8d41a80bcd05889c87d"
+      "sha256": "8791b21f30c09fccb70c9a40e4edb68fe6f7c88b2fd4ecf646b699c184b1be2a"
     },
     {
       "path": ".gitattributes",
@@ -42,7 +42,7 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "df0a38b00d6d537153599f85591702df4ee884ea1f206f35c8b11012f1db3569"
+      "sha256": "45c2371840ada5ff63742660443eda99b9c4af1a4a26672221ad6f5f1495cab7"
     },
     {
       "path": "CONTRIBUTING.md",
@@ -58,7 +58,7 @@
     },
     {
       "path": "README.md",
-      "sha256": "d20c7c83438fcb445eed4b2afbc974c4e072fbaaec459b1f1e545ad127953d10"
+      "sha256": "2f32ce9344a66ac6a75710c5c527defd017e5bd4034729dd30de76ba003691c8"
     },
     {
       "path": "SECURITY.md",
@@ -186,7 +186,7 @@
     },
     {
       "path": "docs/configuration.md",
-      "sha256": "e023306819ba1c495772f61c85a5b6c7ec2bcf79517ae1033e88cb86762249ba"
+      "sha256": "3f29a3ad8fce5861e7b18a2a9c1f34fd8e60e7ee13b9caa6170ad853ee4fabfb"
     },
     {
       "path": "docs/images/dashboard.jpg",
@@ -234,7 +234,7 @@
     },
     {
       "path": "gen-opencode.js",
-      "sha256": "8ad7a139d31545d75c2fe88069b5c50a5c49bae40cc29443152ddb1b657d614a"
+      "sha256": "99ee1fc4f4208d9175489ff7fa1b1a24e034e20e195f5b2004909dcad796bfeb"
     },
     {
       "path": "go.mod",
@@ -449,8 +449,12 @@
       "sha256": "f769efc1542d7c4ab74683abfc000c5847955b027f8b5b2d4c4ece006cd0f5d9"
     },
     {
+      "path": "internal/server/model_proxy_test.go",
+      "sha256": "a9a9c85a2cc4818599ba9af99d5357e5d7d618ea2b25d875c5bfb5052973b427"
+    },
+    {
       "path": "internal/server/proxy.go",
-      "sha256": "cf155e4189ee7e7f9ff3c403e0125ea8074e0fd2ab3870b8e45dd0e8a73c590b"
+      "sha256": "666279508b5c19780ddf680d7916e482cf911c578388808acd2b2f6cb0c726d3"
     },
     {
       "path": "internal/server/proxy_test.go",
@@ -478,7 +482,7 @@
     },
     {
       "path": "internal/server/server.go",
-      "sha256": "aeb1282160a22850bbe384a05a302a24c645e339bff73d779e3bef215cad7cf6"
+      "sha256": "cd75f1daaab09c6f4407f00c4f124feec8792d50c82edc8b08a99ad38af15338"
     },
     {
       "path": "internal/server/server_test.go",
@@ -717,6 +721,14 @@
       "sha256": "9619696f3c05348e5070db461cf2ca7e5c48a83a333dca976dc756f358ccc964"
     },
     {
+      "path": "scripts/client-routing.cjs",
+      "sha256": "f8279590a14be72b1444c08620c27fa206fa195cf05d97098013cd71612a2a4e"
+    },
+    {
+      "path": "scripts/connect-clients.cjs",
+      "sha256": "f0cb91c3f28b4d85005fddbfa4c6de5c4f995e27528baff9f27738eaf321144a"
+    },
+    {
       "path": "scripts/demo.py",
       "sha256": "554b702808a52eb1e8891b3cbe6d1dd895eddac9b3a2265e60dfd089152dfb7e"
     },
@@ -726,7 +738,7 @@
     },
     {
       "path": "scripts/env.cjs",
-      "sha256": "55e81a6d91446087c86de7c85f203c2582b9b79ed19921caf084150cca59e726"
+      "sha256": "e3c7ad6f59d96e03df49b66366a8b1b1cad17c058439271bf71cc8a27b93b31c"
     },
     {
       "path": "scripts/env.py",
@@ -738,7 +750,7 @@
     },
     {
       "path": "scripts/public-manifest.json",
-      "sha256": "631f9e5f7ace07b80e7887819c2cd0e686b1999043337f017c1b223d7c3fbe78"
+      "sha256": "92f75bd09378ee03023676e13105021317a0a7d812e59938d51cd21e97b59cf7"
     },
     {
       "path": "scripts/start.py",
@@ -818,7 +830,7 @@
     },
     {
       "path": "static/index.html",
-      "sha256": "804c7afc1bdbb0944507ced8e3bf53c3a5c0e81e97a245b7847a671f661bd057"
+      "sha256": "5276c15add101890fc136524014df82dab21d1e1cb35f79592deca3c8b43e36a"
     },
     {
       "path": "static/js/api.js",
@@ -862,7 +874,7 @@
     },
     {
       "path": "static/js/page.js",
-      "sha256": "386bbec5bb07a1a7722b550691e7add2c81d3aa3002ce1b3ec8dc01c95bd7836"
+      "sha256": "62962b3d106a892e76bef9aad9c2d7a68670b9bf7ffe3eb65a91285593e0e390"
     },
     {
       "path": "static/js/quickgen.js",
@@ -918,7 +930,7 @@
     },
     {
       "path": "strata/sync-pi.js",
-      "sha256": "f2bd655c8378b4bfc996bcbaf9e8fdd144556e12dc8c6b0e599995a4e43c7f56"
+      "sha256": "c9ee2d89a3a68bfec478e66270a6bee01b6e000e27fb6275a2f213b4444e4223"
     },
     {
       "path": "strata/test_launch.py",
@@ -926,7 +938,7 @@
     },
     {
       "path": "tests/frontend.test.cjs",
-      "sha256": "9f64d72113c35613c8100475c97b6e81fbdea8045d2fffcce0a66265f673c95c"
+      "sha256": "15afc73e9cca95bc93375a795dc210497cb8603ba17dbf5a17bd2171d8ea6031"
     },
     {
       "path": "tests/parity/run_parity.py",

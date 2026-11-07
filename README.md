@@ -134,6 +134,20 @@ several minutes to load. Hub credentials are not forwarded to inference
 backends; native profiles can use private keys in `AIHUB_KEYS_DIR`.
 Use HTTPS and the configured hostname for access from another machine.
 
+To pin a harness to one model, use the base URL
+`http://localhost:8080/v1/model/<registry-profile-id>` and the same hub token.
+For example, Maya Derisked uses profile `glm53-flash-maya-m-derisked` and
+model `glm-5.3-flash-derisked`. The model card's **API** action shows the
+connection details. Strata/Maya keys stay on the server. A stopped pinned
+model returns `503`; it never falls back to a different model.
+
+For another machine, set `AIHUB_PUBLIC_URL` to the hub address and supply
+only `AIHUB_CLIENT_TOKEN` or a private `~/.config/ai-hub/hub-api-key` file.
+Run `node scripts/connect-clients.cjs` to migrate existing generated
+OpenCode/pi configurations with backups, preserving models, thinking levels
+and defaults. For a fresh configuration, run `node gen-opencode.js` or
+`node strata/sync-pi.js`. See [client configuration](docs/configuration.md).
+
 ## MCP media tools
 
 ```sh

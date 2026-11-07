@@ -35,6 +35,7 @@ Restart after changes.
 | `AIHUB_SSH_USER`, `AIHUB_SSH_PORT` | Deployment account and SSH port |
 | `AIHUB_REMOTE_DIR`, `AIHUB_SERVICE`, `AIHUB_MCP_SERVICE` | Deployment root and units |
 | `AIHUB_OPENCODE_OUTPUT` | Output path for the legacy OpenCode generator |
+| `AIHUB_PI_OUTPUT` | Optional pi models configuration path for generation/migration |
 | `AIHUB_CLIENT_TOKEN`, `AIHUB_CLIENT_TOKEN_FILE` | Private hub credential for client generators; token overrides the file |
 
 Explicit registry/catalog paths must exist and validate; relative paths resolve
@@ -43,11 +44,38 @@ built-in catalog, including their installation-specific paths and installers.
 Only public links are exposed by `/runtime-config.js`; never put credentials
 in those URLs. Internal provider URLs are trusted administrator configuration.
 
-OpenCode/pi generators read the Universal API credential from
+OpenCode/pi generators use one hub credential for Universal and every pinned model, read from
 `AIHUB_CLIENT_TOKEN`, then `AIHUB_CLIENT_TOKEN_FILE` (default:
 `~/.config/ai-hub/hub-api-key`), then `AIHUB_TOKEN`. Keep a remote server's
 credential separate from a local development token. Generated client files
 contain credentials and must remain private.
+
+Clients use `/v1` with model `universal` to follow the active model, or
+`/v1/model/<registry-profile-id>` with the existing upstream model ID to pin
+a profile. Both support `/models` and `/chat/completions`; pinned discovery
+requires the selected profile to be running. Streaming, tool calls, image
+input and thinking parameters pass through unchanged. Pinning prevents
+fallback to a different model. Unknown/non-LLM profiles return `404`, stopped
+profiles `503`, and missing server-side native keys `502` with an explanation.
+
+On another machine, Node.js 22+ client setup needs only the hub address and
+hub token. Set `AIHUB_PUBLIC_URL` to the server's URL, and provide
+`AIHUB_CLIENT_TOKEN` privately or place the token in
+`~/.config/ai-hub/hub-api-key`. Set `AIHUB_ENV_FILE=-` to ignore checkout-local
+server/development settings. No Strata/Maya key files are needed on clients.
+
+```sh
+node scripts/connect-clients.cjs  # migrate existing generated JSON configs
+node gen-opencode.js             # create/replace OpenCode configuration
+node strata/sync-pi.js            # create/merge pi providers
+```
+
+The migration changes only known AI-HUB provider URLs and credentials and
+saves private backups beside the originals. Provider/model IDs, defaults,
+reasoning settings and unrelated providers remain unchanged. Restart the
+harness to reload its configuration. The output path variables above also
+apply to migration. The API action on each model card shows its pinned URL,
+model name and a command using `$AIHUB_TOKEN`.
 
 ## MCP file access
 

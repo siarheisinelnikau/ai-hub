@@ -203,9 +203,13 @@ func (s *Server) Handler() http.Handler {
 	// Universal LLM proxy (Go-only extension, no parity constraint):
 	// OpenAI-compatible endpoints that always forward to the LAST-STARTED
 	// running model, so clients keep one stable base URL across model
-	// switches. No auth (model endpoints are unauthenticated on the LAN).
+	// switches. Client authentication is enforced by securityHeaders.
 	mux.HandleFunc("GET /v1/models", s.handleUniversalModels)
 	mux.HandleFunc("POST /v1/chat/completions", s.handleUniversalChat)
+	// Pin a client to a specific model, using the same hub credential and
+	// retaining its upstream model IDs (including shared aliases).
+	mux.HandleFunc("GET /v1/model/{mid}/models", s.handleModelProxyModels)
+	mux.HandleFunc("POST /v1/model/{mid}/chat/completions", s.handleModelProxyChat)
 	// Service actions. NOTE: no dedicated /build route — in app.py the
 	// {action} route is declared before /build, so "build" is handled by
 	// service_action (action="build") exactly like any other action.

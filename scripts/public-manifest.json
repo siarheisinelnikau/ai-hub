@@ -37,6 +37,8 @@
     "scripts/start.py",
     "scripts/env.py",
     "scripts/env.cjs",
+    "scripts/connect-clients.cjs",
+    "scripts/client-routing.cjs",
     "scripts/deploy.py",
     "scripts/check.py",
     "scripts/ci.sh",

@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- OpenCode/pi and model-card API instructions now connect through AI-HUB with
+  one hub token. Private Strata/Maya keys stay on the server.
+- Per-profile OpenAI-compatible endpoints preserve model IDs, thinking, images,
+  tools and streamed responses without routing stopped profiles to other models.
+- Client generators no longer require separate engine-key files. An existing
+  configuration migration preserves providers, defaults and model settings with
+  private backups.
+
 ## 0.1.0 — 2026-10-29
 
 ### Changed

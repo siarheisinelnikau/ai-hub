@@ -1,6 +1,6 @@
-const {serviceURL, hubURL, hubToken} = require('./scripts/env.cjs');
+const {modelURL, hubURL, hubToken} = require('./scripts/env.cjs');
 // Generates ~/.config/opencode/opencode.jsonc from the ai-hub model matrix.
-// One provider per hub LLM (each has its own port), only its largest context.
+// One provider per hub LLM through the hub, only its largest context.
 const fs=require('fs');
 const os=require('os');
 const path=require('path');
@@ -49,6 +49,7 @@ const DEFAULT_MODEL="universal/universal";
 // (only xhigh/medium/low — verified from tokenizer.chat_template in the GGUFs).
 const DEFAULT_VARIANT="thinking-xhigh";
 const provider={};
+const token=hubToken();
 for(const[key,port,apiId,family,namePrefix,quant,variants,hasV]of P){
   const models={};
   for(const[ctx,suffix,out]of variants){
@@ -70,26 +71,22 @@ for(const[key,port,apiId,family,namePrefix,quant,variants,hasV]of P){
   }
   provider[key]={
     name:"AI HUB (Local)",
-    options:{apiKey:"none",baseURL:serviceURL(port),timeout:false,...(key.startsWith("nemotron35-super-")?{headerTimeout:7200000}:{}),chunkTimeout:["nemotron35-super-q4k","nemotron35-super-uncensored"].includes(key)?7200000:1800000},
+    options:{apiKey:token,baseURL:modelURL(["qwen-q4k","qwen-q6k"].includes(key)?key+"-llama":key),timeout:false,...(key.startsWith("nemotron35-super-")?{headerTimeout:7200000}:{}),chunkTimeout:["nemotron35-super-q4k","nemotron35-super-uncensored"].includes(key)?7200000:1800000},
     models,
   };
-  if(hasV==="strata" || hasV==="maya") {
-    const keyName=key==="glm53-flash-maya-m-derisked"?"maya-glm53-derisked-api-key":hasV==="maya"?"maya-glm53-api-key":key==="qwen38-flash-next-iq3-strata"?"strata-iq3-api-key":key==="qwen38-flash-next-uncensored-strata"?"strata-uncensored-iq4-api-key":"strata-api-key";
-    const keyFile=path.join(os.homedir(),".config","ai-hub",keyName);
-    if(!fs.existsSync(keyFile)) throw new Error("Missing private Strata API key: "+keyFile);
-    provider[key].options.apiKey=fs.readFileSync(keyFile,"utf8").trim();
-  }
 }
 // The configured 1M budget does not enlarge the active model's loaded context.
 provider.universal={
   name:"AI HUB (Universal)",
   npm:"@ai-sdk/openai-compatible",
-  options:{apiKey:hubToken(),baseURL:hubURL(),timeout:false,headerTimeout:7200000,chunkTimeout:7200000},
+  options:{apiKey:token,baseURL:hubURL(),timeout:false,headerTimeout:7200000,chunkTimeout:7200000},
   models:{universal:{id:"universal",name:"AI Hub Universal 1M",family:"ai-hub",reasoning:false,tool_call:true,temperature:true,limit:{context:1048576,output:32768}}},
 };
 const doc={"$schema":"https://opencode.ai/config.json",model:DEFAULT_MODEL,provider};
 const target=process.env.AIHUB_OPENCODE_OUTPUT || path.join(os.homedir(),".config","opencode","opencode.jsonc");
-fs.writeFileSync(target,JSON.stringify(doc,null,2)+"\n");
+fs.mkdirSync(path.dirname(target),{recursive:true});
+fs.writeFileSync(target,JSON.stringify(doc,null,2)+"\n",{mode:0o600});
+if(process.platform!=="win32") fs.chmodSync(target,0o600);
 console.log("wrote",target);
 const j=JSON.parse(fs.readFileSync(target,"utf8"));
 let n=0;

@@ -1,40 +1,36 @@
-const {serviceURL, hubURL, hubToken} = require('../scripts/env.cjs');
+const {hubURL, hubToken} = require('../scripts/env.cjs');
+const {profileURL, migrateProviders} = require('../scripts/client-routing.cjs');
 // Merge Strata into pi with only the largest context; trim the Universal alias.
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const target = path.join(os.homedir(), '.pi', 'agent', 'models.json');
-const before = fs.readFileSync(target, 'utf8');
+const target = process.env.AIHUB_PI_OUTPUT || path.join(os.homedir(), '.pi', 'agent', 'models.json');
+const before = fs.existsSync(target) ? fs.readFileSync(target, 'utf8') : '{"providers":{}}';
 const doc = JSON.parse(before);
-const mayaKey = fs.readFileSync(path.join(os.homedir(), '.config', 'ai-hub', 'maya-glm53-api-key'), 'utf8').trim();
-if (mayaKey.length < 32) throw new Error('Missing private Maya API key');
+doc.providers ||= {};
+const token = hubToken();
 doc.providers['ai-hub-glm53-maya-m'] = {
-  baseUrl: serviceURL(18037), api: 'openai-completions', apiKey: mayaKey,
+  baseUrl: profileURL(18037), api: 'openai-completions', apiKey: token,
   compat: {supportsDeveloperRole:false, supportsReasoningEffort:true, maxTokensField:'max_tokens', thinkingFormat:'openai'},
   models: [{id:'glm-5.3-flash', name:'GLM 5.3 Flash 321B Maya-M IQ2_S 256k', reasoning:true,
     input:['text','image'], contextWindow:262144, maxTokens:16384,
     thinkingLevelMap:{off:'none',minimal:null,low:'low',medium:null,high:'high',xhigh:'max',max:'max'},
     cost:{input:0,output:0,cacheRead:0,cacheWrite:0}}],
 };
-const deriskedKey = fs.readFileSync(path.join(os.homedir(), '.config', 'ai-hub', 'maya-glm53-derisked-api-key'), 'utf8').trim();
-if (deriskedKey.length < 32) throw new Error('Missing private Derisked API key');
 doc.providers['ai-hub-glm53-maya-m-derisked'] = structuredClone(doc.providers['ai-hub-glm53-maya-m']);
 const derisked = doc.providers['ai-hub-glm53-maya-m-derisked'];
-derisked.baseUrl = serviceURL(18038);
-derisked.apiKey = deriskedKey;
+derisked.baseUrl = profileURL(18038);
 derisked.models[0].id = 'glm-5.3-flash-derisked';
 derisked.models[0].name = 'GLM 5.3 Flash 321B Derisked Maya-M IQ2_S 1M';
 derisked.models[0].contextWindow = 1048576;
 const managed = new Set(['ai-hub', 'ai-hub-flash-next-iq4', 'ai-hub-flash-next-uncensored-iq4', 'ai-hub-flash-next-iq3', 'ai-hub-gpt-oss-120b', 'ai-hub-qwen35-122b-q4k', 'ai-hub-qwen38-35b-q8']);
-for (const [name, port, id, quant, keyName] of [
-  ['ai-hub-flash-next-iq4', 18029, 'qwen3.8-flash-next-unsloth-ud-iq4_xs', 'UD-IQ4_XS', 'strata-api-key'],
-  ['ai-hub-flash-next-uncensored-iq4', 18030, 'qwen3.8-flash-next-uncensored-ud-iq4_xs', 'Uncensored UD-IQ4_XS', 'strata-uncensored-iq4-api-key'],
-  ['ai-hub-flash-next-iq3', 18033, 'qwen3.8-flash-next-iq3_xxs', 'IQ3_XXS', 'strata-iq3-api-key'],
+for (const [name, port, id, quant] of [
+  ['ai-hub-flash-next-iq4', 18029, 'qwen3.8-flash-next-unsloth-ud-iq4_xs', 'UD-IQ4_XS'],
+  ['ai-hub-flash-next-uncensored-iq4', 18030, 'qwen3.8-flash-next-uncensored-ud-iq4_xs', 'Uncensored UD-IQ4_XS'],
+  ['ai-hub-flash-next-iq3', 18033, 'qwen3.8-flash-next-iq3_xxs', 'IQ3_XXS'],
 ]) {
-  const key = fs.readFileSync(path.join(os.homedir(), '.config', 'ai-hub', keyName), 'utf8').trim();
-  if (key.length < 32) throw new Error('Missing private API key for ' + name);
   doc.providers[name] = {
-    baseUrl: serviceURL(port), api: 'openai-completions', apiKey: key,
+    baseUrl: profileURL(port), api: 'openai-completions', apiKey: token,
     compat: {supportsDeveloperRole: false, supportsReasoningEffort: true,
       maxTokensField: 'max_tokens', thinkingFormat: 'openai'},
     models: [262144].map(ctx => ({
@@ -54,7 +50,7 @@ for (const [name, port, id, label, context] of [
   ['ai-hub-gpt-oss-120b', 18041, 'gpt-oss-120b', 'GPT-OSS 120B MXFP4', 131072],
 ]) {
   doc.providers[name] = {
-    baseUrl: serviceURL(port), api: 'openai-completions', apiKey: 'none',
+    baseUrl: profileURL(port), api: 'openai-completions', apiKey: token,
     compat: {supportsDeveloperRole: false, supportsReasoningEffort: name.includes('gpt-oss'), maxTokensField: 'max_tokens'},
     models: [{id, name: `${label} ${context/1024}k`, reasoning:true, input:['text','image'], contextWindow:context, maxTokens:32768,
       cost:{input:0,output:0,cacheRead:0,cacheWrite:0}}],
@@ -66,10 +62,15 @@ for (const [name, port, id, label, context] of [
     doc.providers[name].models[0].thinkingLevelMap = {minimal:null,low:null,medium:null,high:'high',xhigh:null,max:null};
   }
 }
+doc.providers['ai-hub'] ||= {
+  api: 'openai-completions',
+  models: [{id:'universal', name:'AI Hub Universal 1M', reasoning:false, input:['text'], contextWindow:1048576, maxTokens:32768,
+    cost:{input:0,output:0,cacheRead:0,cacheWrite:0}}],
+};
 const universal = doc.providers['ai-hub'];
 if (universal?.models) {
   universal.baseUrl = hubURL();
-  universal.apiKey = hubToken();
+  universal.apiKey = token;
   universal.models = universal.models.filter(model => model.id !== 'universal-128k');
   const model = universal.models.find(model => model.id === 'universal');
   if (model) {
@@ -77,15 +78,19 @@ if (universal?.models) {
     model.name = 'AI Hub Universal 1M';
   }
 }
+// Migrate existing Qwen/Gemma/Nemotron entries without changing their model IDs.
+migrateProviders(doc, 'pi', token);
 const after = JSON.stringify(doc, null, 2) + '\n';
 if (after !== before) {
-  fs.writeFileSync(target + '.bak.max-context-' + new Date().toISOString().replace(/[:.]/g, '-'), before);
-  fs.writeFileSync(target, after);
+  fs.mkdirSync(path.dirname(target), {recursive:true});
+  if (fs.existsSync(target)) fs.writeFileSync(target + '.bak.max-context-' + new Date().toISOString().replace(/[:.]/g, '-'), before, {mode:0o600});
+  fs.writeFileSync(target, after, {mode:0o600});
 }
+if (process.platform !== 'win32') fs.chmodSync(target, 0o600);
 const actual = JSON.parse(fs.readFileSync(target, 'utf8'));
 for (const [name, provider] of Object.entries(JSON.parse(before).providers)) {
   if (['ai-hub-glm53-maya-m', 'ai-hub-glm53-maya-m-derisked'].includes(name)) continue;
-  if (managed.has(name)) continue;
+  if (managed.has(name) || name.startsWith('ai-hub-')) continue;
   if (JSON.stringify(actual.providers[name]) !== JSON.stringify(provider)) throw new Error('Existing provider changed: ' + name);
 }
 for (const name of ['ai-hub-flash-next-iq4', 'ai-hub-flash-next-uncensored-iq4']) {
