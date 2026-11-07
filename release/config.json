@@ -1,0 +1,12 @@
+{
+  "repository": "siarheisinelnikau/ai-hub",
+  "product": "ai-hub",
+  "kind": "go",
+  "assets": [
+    {
+      "name": "ai-hub-v{version}-linux-amd64.tar.gz"
+    }
+  ],
+  "notices": false,
+  "checksum_aliases": []
+}
